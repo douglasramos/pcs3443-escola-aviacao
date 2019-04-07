@@ -24,6 +24,14 @@ Now activate the virtual environment:
 venv\Scripts\activate
 ```
 
+### Installing dependencies
+
+To install dependencies necessary for the project, do:
+
+```cmd
+pip install -r requirements.txt
+```
+
 ## Run the project
 
 you can run the project with the following commands:
