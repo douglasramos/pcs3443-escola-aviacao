@@ -11,7 +11,7 @@ ns = api.namespace(
 class instructorList(Resource):
 
     def get(self):
-        """Returns list of instructors"""
+        """Returns list of instructors legal"""
         return get_instructors_list()
 
 
