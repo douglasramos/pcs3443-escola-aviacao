@@ -11,13 +11,14 @@ def initialize_app(app):
     blueprint_api = Blueprint('api', __name__)
     api.init_app(blueprint_api)
     api.add_namespace(instructors_namespace)
-    #api.add_namespace(blog_categories_namespace)
     app.register_blueprint(blueprint_api, url_prefix='/api')
     initialize_database()
 
+
 def main():
     initialize_app(app)
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run()
 
 if __name__ == "__main__":
     main()
