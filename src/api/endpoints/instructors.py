@@ -13,7 +13,7 @@ ns = api.namespace(
 class instructor(Resource):
 
     def get(self):
-        """Returns list of instructors"""
+        """Returns a list of all instructors"""
 
         return get_instructors_list()
 
@@ -39,16 +39,16 @@ class instructor(Resource):
 class instructorByID(Resource):
 
     def get(self, id):
-        """Returns details of a instructor."""
+        """Returns details of an instructor."""
         return get_instructor(id)
 
     def delete(self, id):  # assume-se que o ID do instrutor a ser removido seja conhecido
-        """Delete a instructor"""
+        """Delete an instructor"""
 
         return delete_instructor(id)
 
     def put(self, id):  # ID é o único argumento obrigatório para um requisição de PUT
-        """Update a instructor"""
+        """Update an instructor"""
 
         json_data = request.get_json(force=True)
 

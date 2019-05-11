@@ -1,0 +1,43 @@
+from flask import request
+from flask_restplus import Resource
+from api.api import api
+from application.student.use_cases import get_students_list, insert_new_student, get_student, delete_student, update_student
+from datetime import datetime, date
+
+ns = api.namespace('students', 
+            description = 'Operations related to student CRUD')
+
+@ns.route('/')
+@api.response(404, 'Request Invalid')
+class student(Resource):
+    def get(self):
+        """Returns a list of all students"""
+
+        return get_students_list()
+
+    def post(self):
+        """Create a new student"""
+
+        json_data = request.get_json(force = True)
+        name = json_data['name']
+        address = json_data['address']
+        birth_date = datetime.strptime(json_data['birth_date'], "%Y-%m-%d").date()
+
+        return insert_new_student(name, address, birth_date)
+
+@ns.route('/<int:id>')
+@api.response(404, 'Request Invalid.')
+class studentByID(Resource):
+    def get(self, id):
+        """Returns details of a student"""
+        return get_student(id)
+
+    def delete(self, id):  # assume-se que o ID do aluno a ser removido seja conhecido
+        """Delete a student"""
+        return delete_student(id)
+
+    def put(self,id):
+        """Update a student"""
+        json_data = request.get_json(force=True)
+
+        return update_student(id, **json_data)
