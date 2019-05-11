@@ -12,25 +12,23 @@ from core.instructor.schema import InstructorSchema
 @db_session
 def get_instructors_list():
     '''retorna uma lista de dicts com informações de cada instrutor'''
-
+    
     instructors = Instructor.select()
-
     schema = InstructorSchema(many=True)
-
     return schema.dump(list(instructors))
 
 
 @db_session
 def get_instructor(id: int):
     """Retorna um instrutor dado um ID"""
-
-    instr = Instructor[id]
-
-    # Deserializa objeto através do InstructorSchema
-    schema = InstructorSchema()
-
-    return schema.dump(instr)
-
+    try:
+        instr = Instructor[id]
+        if instr:
+            # Deserializa objeto através do InstructorSchema
+            schema = InstructorSchema()
+            return schema.dump(instr)
+    except ObjectNotFound:
+        return 'Instrutor não encontrado'
 
 @db_session
 def insert_new_instructor(name: str, license_number: int, address: str, birth_date: date,
@@ -39,20 +37,19 @@ def insert_new_instructor(name: str, license_number: int, address: str, birth_da
     instr = Instructor(name=name, license_number=license_number, address=address,
                        birth_date=birth_date, course_name=course_name, graduation_date=graduation_date,
                        institution=institution)
-
     commit()
-
     return {"endpoint": "/api/instructors/" + str(instr.ID)}
 
 
 @db_session
 def delete_instructor(ID: int):
-    '''Given an ID, remove a instructor'''
+    '''Given an ID, remove an instructor'''
 
     try:
         instr = Instructor[ID]
         if instr:
             instr.delete()
+            commit()
             return 'Instrutor removido com sucesso!'
     except ObjectNotFound:
         return 'Instrutor não encontrado'
@@ -70,4 +67,5 @@ def update_instructor(id, **args):
         return 'Instrutor não encontrado', 404
     # altera somente os argumentos cujas chaves estão explícitas no args
     instr.set(**args)
+    commit()
     return {"endpoint": "/api/instructors/" + str(instr.ID)}
