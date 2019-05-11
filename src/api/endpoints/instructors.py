@@ -1,43 +1,55 @@
 from flask import request
 from flask_restplus import Resource
 from api.api import api
-from application.instructor.use_cases import insert_new_instructor, delete_instructor, get_instructors_list, alter_instructor
+from application.instructor.use_cases import insert_new_instructor, delete_instructor, get_instructors_list, update_instructor, get_instructor
+from datetime import datetime, date
 
 ns = api.namespace(
     'instructors', description='Operations related to instructor CRUD')
 
+
 @ns.route('/')
-class instructorList(Resource):
+@api.response(404, 'Request Invalid.')
+class instructor(Resource):
 
     def get(self):
-        """Returns list of instructors legal"""
+        """Returns list of instructors"""
+
         return get_instructors_list()
 
     def post(self):
-        json_data = request.get_json(force = True)
+        """Create a new instructor"""
+
+        json_data = request.get_json(force=True)
+
         name = json_data['name']
         license_number = json_data['license_number']
         address = json_data['address']
-        birth_date = json_data['birth_date']
+        birth_date = datetime.strptime(json_data['birth_date'], "%Y-%m-%d").date()
         course_name = json_data['course_name']
-        graduation_date = json_data['graduation_date']
+        graduation_date = datetime.strptime(json_data['graduation_date'], "%Y-%m-%d").date()
         institution = json_data['institution']
+
         return insert_new_instructor(name, license_number, address, birth_date,
-                                    course_name, graduation_date, institution)
+                                     course_name, graduation_date, institution)
 
-    def delete(self): # assume-se que o ID do instrutor a ser removido seja conhecido
-        json_data = request.get_json(force = True)
-        ID = json_data['ID']
-        return delete_instructor(ID)
 
-    def put(self): # ID é o único argumento obrigatório para um requisição de PUT
-        json_data = request.get_json(force = True)        
-        return alter_instructor(**json_data)        
+@ns.route('/<int:id>')
+@api.response(404, 'Request Invalid.')
+class instructorByID(Resource):
 
-# @ns.route('/<int:id>')
-# @api.response(404, 'Instructor not found.')
-# class CategoryItem(Resource):
+    def get(self, id):
+        """Returns details of a instructor."""
+        return get_instructor(id)
 
-#     def get(self, id):
-#         """Returns details of a instructor."""
-#         return get_category(id)
+    def delete(self, id):  # assume-se que o ID do instrutor a ser removido seja conhecido
+        """Delete a instructor"""
+
+        return delete_instructor(id)
+
+    def put(self, id):  # ID é o único argumento obrigatório para um requisição de PUT
+        """Update a instructor"""
+
+        json_data = request.get_json(force=True)
+
+        return update_instructor(id, **json_data)
