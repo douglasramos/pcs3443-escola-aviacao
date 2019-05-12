@@ -1,8 +1,9 @@
 from flask import request
-from flask_restplus import Resource
+from flask_restplus import Resource, fields
 from api.api import api
 from application.instructor.use_cases import insert_new_instructor, delete_instructor, get_instructors_list, update_instructor, get_instructor
 from datetime import datetime, date
+from core.models import Instructor
 
 ns = api.namespace(
     'instructors', description='Operations related to instructor CRUD')
@@ -10,6 +11,7 @@ ns = api.namespace(
 
 @ns.route('/')
 @api.response(404, 'Request Invalid.')
+@api.response(200, 'Success')
 class instructor(Resource):
 
     def get(self):
@@ -36,6 +38,7 @@ class instructor(Resource):
 
 @ns.route('/<int:id>')
 @api.response(404, 'Request Invalid.')
+@api.response(200, 'Success')
 class instructorByID(Resource):
 
     def get(self, id):

@@ -1,18 +1,18 @@
 from persistance.persistance import db
-from core.instructor.model import Instructor
+from core.models import Instructor
 
 from flask import jsonify
 from pony.orm import *
 from pony.orm.serialization import to_dict
 from datetime import datetime, date
 
-from core.instructor.schema import InstructorSchema
+from core.schemas import InstructorSchema
 
 
 @db_session
 def get_instructors_list():
     '''retorna uma lista de dicts com informações de cada instrutor'''
-    
+
     instructors = Instructor.select()
     schema = InstructorSchema(many=True)
     return schema.dump(list(instructors))
@@ -29,6 +29,7 @@ def get_instructor(id: int):
             return schema.dump(instr)
     except ObjectNotFound:
         return 'Instrutor não encontrado'
+
 
 @db_session
 def insert_new_instructor(name: str, license_number: int, address: str, birth_date: date,
