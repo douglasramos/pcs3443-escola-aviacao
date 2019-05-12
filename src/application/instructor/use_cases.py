@@ -1,7 +1,6 @@
 from persistance.persistance import db
 from core.models import Instructor
 
-from flask import jsonify
 from pony.orm import *
 from pony.orm.serialization import to_dict
 from datetime import datetime, date
@@ -15,7 +14,7 @@ def get_instructors_list():
 
     instructors = Instructor.select()
     schema = InstructorSchema(many=True)
-    return schema.dump(list(instructors))
+    return schema.dump(list(instructors)).data
 
 
 @db_session
@@ -26,7 +25,7 @@ def get_instructor(id: int):
         if instr:
             # Deserializa objeto através do InstructorSchema
             schema = InstructorSchema()
-            return schema.dump(instr)
+            return schema.dump(instr).data
     except ObjectNotFound:
         return 'Instrutor não encontrado'
 

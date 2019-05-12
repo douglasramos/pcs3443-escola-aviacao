@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from flask_restplus import Resource
 from api.api import api
 from application.student.use_cases import get_students_list, insert_new_student, get_student, delete_student, update_student
@@ -14,7 +14,9 @@ class student(Resource):
     def get(self):
         """Returns a list of all students"""
 
-        return get_students_list()
+        response = jsonify(get_students_list())
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
     def post(self):
         """Create a new student"""
@@ -25,7 +27,9 @@ class student(Resource):
         birth_date = datetime.strptime(
             json_data['birth_date'], "%Y-%m-%d").date()
 
-        return insert_new_student(name, address, birth_date)
+        response = jsonify(insert_new_student(name, address, birth_date))
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
 
 @ns.route('/<int:id>')
@@ -33,14 +37,22 @@ class student(Resource):
 class studentByID(Resource):
     def get(self, id):
         """Returns details of a student"""
-        return get_student(id)
+
+        response = jsonify(get_student(id))
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
     def delete(self, id):  # assume-se que o ID do aluno a ser removido seja conhecido
         """Delete a student"""
-        return delete_student(id)
+
+        response = jsonify(delete_student(id))
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
     def put(self, id):
         """Update a student"""
         json_data = request.get_json(force=True)
 
-        return update_student(id, **json_data)
+        response = jsonify(update_student(id, **json_data))
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response

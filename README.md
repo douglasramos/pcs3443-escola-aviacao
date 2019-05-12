@@ -24,9 +24,18 @@ Now activate the virtual environment:
 venv\Scripts\activate
 ```
 
-### Installing dependencies
+### Installing FrontEnd dependencies
 
-To install dependencies necessary for the project, do:
+The front-end is built using react and it is located at client folder. In order to setup the front, do:
+
+```cmd
+cd client
+npm install # to install all node dependecies
+```
+
+### Installing Api dependencies
+
+To install dependencies necessary for the api project, do:
 
 ```cmd
 pip install -r requirements.txt
@@ -34,23 +43,25 @@ pip install -r requirements.txt
 
 ## Run the project
 
-you can run the project with the following commands:
+you can run the project with the following commands.
+
+FrontEnd:
+
+```cmd
+cd client && npm start
+```
+
+Backend:
 
 ```cmd
 cd src && python app.py
 ```
 
-To run backend api. And:
+If you use **vscode**, you can just **Run Build Task (Ctrl + Shift + B)** to build and run the backend and the frontend at the same time.
 
-```cmd
-.....
-```
+The Frontend will be running on http://localhost:3000/. To see more commands for testing e deploying the frontend, see the README.md on the client folder
 
-To run the frontend.
-
-If you use **vscode**, you can just **Run Build Task (Ctrl + Shift + B)** to build and run the backend and the front end at the same time.
-
-The backend api will be running on http://127.0.0.1:5000/api root. If you go to this socket, you can see a swagger documentation for the api, that allows you to see the documentation for all endpoints and test which one of them.
+The backend api will be running on http://localhost:8888/api root. If you go to this socket, you can see a swagger documentation for the api, that allows you to see the documentation for all endpoints and test which one of them.
 
 You can test the endpoints using a rest API software of your choice or even via console through the **curl**. Example:
 
@@ -58,7 +69,8 @@ You can test the endpoints using a rest API software of your choice or even via 
 curl http://127.0.0.1:5000/api/instructor
 ```
 
-### Project's source code structure
+
+### Project's source code backend structure
 
 ```
 src

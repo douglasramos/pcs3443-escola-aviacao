@@ -48,4 +48,4 @@ class InstructorSchema(Schema):
     @post_dump(pass_many=True)
     def wrap(self, data, many):
 
-        return data
+        return (data)
