@@ -4,6 +4,7 @@ from api.endpoints.instructors import ns as instructors_namespace
 from api.endpoints.students import ns as students_namespace
 from persistance.persistance import db, initialize_database
 from settings import *
+from test_functions import populate_database
 
 app = Flask(__name__)
 api = Api(app)
@@ -31,6 +32,7 @@ def initialize_app(app):
     app.register_blueprint(blueprint_api)
 
     initialize_database()
+    populate_database()  # preenche as tabelas Student e Instructor caso estejam vazias
 
 
 def main():
