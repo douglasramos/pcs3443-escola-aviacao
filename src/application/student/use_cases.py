@@ -15,7 +15,7 @@ def get_students_list():
 
     students = Student.select()
     schema = StudentSchema(many = True)
-    return schema.dump(list(students))
+    return schema.dump(list(students)).data
 
 
 @db_session
@@ -26,7 +26,7 @@ def get_student(id: int):
         if stud:
             # Deserializa objeto através do InstructorSchema
             schema = StudentSchema()
-            return schema.dump(stud)
+            return schema.dump(stud).data
     except ObjectNotFound:
         return 'Aluno não encontrado'
 

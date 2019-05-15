@@ -50,13 +50,13 @@ def delete_instructor(ID: int):
         if instr:
             instr.delete()
             commit()
-            return 'Instrutor removido com sucesso!'
+            return 'Instrutor removido com sucesso'
     except ObjectNotFound:
         return 'Instrutor não encontrado'
 
 
 @db_session
-def update_instructor(id, **args):
+def update_instructor(id : int, **args):
 
     # nem sempre deseja-se alterar todos os parâmetros, por isso uso o dict **args
     # o args só vai conter os campos que eu desejo alterar
@@ -64,7 +64,7 @@ def update_instructor(id, **args):
     try:  # verifica-se, inicialmente se o instrutor consta no BD
         instr = Instructor[id]
     except ObjectNotFound:
-        return 'Instrutor não encontrado', 404
+        return 'Instrutor não encontrado'
     # altera somente os argumentos cujas chaves estão explícitas no args
     instr.set(**args)
     commit()

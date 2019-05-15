@@ -10,6 +10,7 @@ ns = api.namespace('students',
 
 @ns.route('/')
 @api.response(404, 'Request Invalid')
+@api.response(200, 'Success')
 class student(Resource):
     def get(self):
         """Returns a list of all students"""
@@ -34,6 +35,7 @@ class student(Resource):
 
 @ns.route('/<int:id>')
 @api.response(404, 'Request Invalid.')
+@api.response(200, 'Success')
 class studentByID(Resource):
     def get(self, id):
         """Returns details of a student"""

@@ -1,27 +1,12 @@
 from marshmallow import Schema, fields, post_dump
 
 
-class LessonSchema(Schema):
-    ID = fields.Int()
-    day = fields.Date()
-    start = fields.Date()
-    finish = fields.Date()
-
-    ordered = True
-
-    # We add a post_dump hook to add an envelope to responses
-    @post_dump(pass_many=True)
-    def wrap(self, data, many):
-
-        return data
-
-
 class StudentSchema(Schema):
     ID = fields.Int()
     name = fields.Str()
     address = fields.Str()
     birth_date = fields.Date()
-    lessons = fields.Nested(LessonSchema, many=True)
+    lessons = fields.Nested('LessonSchema', many=True, exclude=('student',))
 
     ordered = True
 
@@ -30,7 +15,6 @@ class StudentSchema(Schema):
     def wrap(self, data, many):
 
         return data
-
 
 class InstructorSchema(Schema):
     ID = fields.Int()
@@ -41,6 +25,7 @@ class InstructorSchema(Schema):
     course_name = fields.Str()
     graduation_date = fields.Date()
     institution = fields.Str()
+    lessons = fields.Nested('LessonSchema', many=True)
 
     ordered = True
 
@@ -49,3 +34,21 @@ class InstructorSchema(Schema):
     def wrap(self, data, many):
 
         return (data)
+
+class LessonSchema(Schema):
+    ID = fields.Int()
+    day = fields.Date()
+    expected_start = fields.Time(format = "%H:%M:%S")
+    expected_finish = fields.Time(format = "%H:%M:%S")
+    actual_duration = fields.Time(format = "%H:%M:$S")
+    status = fields.Int()
+    student = fields.Nested(StudentSchema, exclude = ('lessons',))
+    instructor = fields.Nested(InstructorSchema, exclude = ('lessons',))
+
+    ordered = True
+
+    # We add a post_dump hook to add an envelope to responses
+    @post_dump(pass_many=True)
+    def wrap(self, data, many):
+
+        return data
