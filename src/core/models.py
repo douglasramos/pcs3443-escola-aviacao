@@ -1,5 +1,5 @@
 from pony.orm import *
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
 from persistance.persistance import db
 
 
@@ -41,9 +41,9 @@ class Lesson(db.Entity):
 
     ID = PrimaryKey(int, auto=True)
     day = Required(date)
-    expected_start = Required(datetime)
-    expected_duration = Required(datetime)
-    actual_duration = Optional(datetime)
-    status = Required(int)
+    expected_start = Required(time)
+    expected_finish = Required(time)
+    actual_duration = Optional(time)
+    status = Required(int)  # 1 (a fazer), 2 (ocorrendo), 3 (feita),  4 avaliada
     student = Required(Student)
     instructor = Required(Instructor)

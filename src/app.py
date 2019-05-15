@@ -2,6 +2,7 @@ from flask import Flask, Blueprint
 from flask_restplus import Resource, Api
 from api.endpoints.instructors import ns as instructors_namespace
 from api.endpoints.students import ns as students_namespace
+from api.endpoints.lessons import ns as lessons_namespace
 from persistance.persistance import db, initialize_database
 from settings import *
 from test_functions import populate_database
@@ -29,6 +30,7 @@ def initialize_app(app):
     # Namespaces
     api.add_namespace(instructors_namespace)
     api.add_namespace(students_namespace)
+    api.add_namespace(lessons_namespace)
     app.register_blueprint(blueprint_api)
 
     initialize_database()

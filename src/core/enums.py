@@ -8,3 +8,4 @@ class StatusLesson(Enum):
     to_do = 1
     on_going = 2
     done = 3
+    evaluated = 4
