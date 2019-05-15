@@ -5,7 +5,7 @@ from api.endpoints.students import ns as students_namespace
 from api.endpoints.lessons import ns as lessons_namespace
 from persistance.persistance import db, initialize_database
 from settings import *
-from test_functions import populate_database
+from test_functions import populate_database, delete_database
 
 app = Flask(__name__)
 api = Api(app)
@@ -35,7 +35,7 @@ def initialize_app(app):
 
     initialize_database()
     populate_database()  # preenche as tabelas Student e Instructor caso estejam vazias
-
+    #delete_database() # remove todas as tabelas do banco de dados, independetemente de estarem vazias ou não
 
 def main():
     initialize_app(app)
