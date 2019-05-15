@@ -44,3 +44,7 @@ def populate_database():
                             institution = 'Escola holandesa de aviação civil')
 
     commit()
+
+@db_session
+def delete_database():
+    db.drop_all_tables(with_all_data = True)

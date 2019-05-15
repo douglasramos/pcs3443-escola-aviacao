@@ -59,7 +59,7 @@ class lessonByID(Resource):
     def put(self, id):
         """Updates a lesson"""
         json_data = request.get_json(force = True)
-        response = jsonify(update_lesson(id, **json_data))
+        response = jsonify(update_lesson(id, **json_data)) # indico o instrutor indiretamente, pelo seu ID, ao invés de ter o objeto instrutor como argumento
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 

@@ -22,20 +22,28 @@ def schedule_class(day: date, expected_start: time, expected_finish: time,
                    student_id: int, instructor_id: int):
     """Agenda uma nova aula, assumindo conhecidos todos os parâmetros"""
     
-    # primeiramente verificamos se o instrutor realmente está livre naquele momento. Pensando que vários usuários podem usar o sistema ao mesmo tempo
-    query = select(l for l in Lesson if (l.instructor.ID == instructor_id)) # query com todas as aulas do instrutor
-    schema = LessonSchema(many=True)
-    lesson_list = schema.dump(list(query)).data # lista com todos as aulas do instrutor 
-
-    # definirei as variáveis para encurtar a notação
+    # definirei essas variáveis para encurtar a notação
     nl_s = expected_start # new_lesson expected start
     nl_f = expected_finish # new_lesson expected finish
     
-    for l in lesson_list:
-        l_s = datetime.strptime(l['expected_start'], "%H:%M:%S").time() # current loop expected start
-        l_f = datetime.strptime(l['expected_finish'], "%H:%M:%S").time() # current loop expected finish
-        if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
-            return 'O instrutor selecionado não está disponível'
+    # primeiramente verificamos se o instrutor realmente está livre naquele momento. Pensando que vários usuários podem usar o sistema ao mesmo tempo
+    lesson_query = select(l for l in Lesson if (l.instructor.ID == instructor_id)) # query com todas as aulas do instrutor
+     
+    for l in lesson_query:
+        if(l.day == day):
+            l_s = l.expected_start # expected start for the current lesson of the loop 
+            l_f = l.expected_finish # expected finish for the lesson of the current loop 
+            if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
+                return 'O instrutor selecionado não está disponível'
+
+    # em seguida, verificamos se a aula que o aluno deseja agendar não gera conflitos em sua grade
+    student = Student[student_id]
+    for lesson in student.lessons:
+        if (lesson.day == day):
+            l_s = lesson.expected_start
+            l_f = lesson.expected_finish
+            if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
+                return 'O agendamento dessa aula gera conflito na grade horária'
 
     new_lesson = Lesson(day = day, expected_start = expected_start,
                         expected_finish = expected_finish, status = 1,
@@ -67,24 +75,71 @@ def delete_lesson(id: int):
         return 'Aula não encontrada'
 
 @db_session
-def update_lesson(id : int, **args):
+def update_lesson(id : int, **args): # um dos parâmetros pode ser o ID do instrutor, ao invés do objeto instrutor
     try:
         lesson = Lesson[id]
     except ObjectNotFound:
         return 'Aula não encontrada'
-    # os objetos do tipo datetime requerem um tratamento especial, uma vez que
-    # a formatação adotada não é reconhecida automaticamente quando se faz .set(**args)
 
+    # primeiro verifico se é necesário alterar o instrutor
+    if 'instructor_id' in args.keys():
+        update_instructor = True
+        new_instructor = Instructor[args['instructor_id']]
+        new_instructor_id = args.pop('instructor_id', None) # removo instructor_id do dict
+    else:
+        update_instructor = False
+        new_instructor = lesson.instructor
+
+    # semelhante ao que acontece no create, é necessário verificar a disponibilidade do aluno/professor
+    # para tal, preciso saber se a data e os horários da aula mudarão ou não nesse update
+    if 'day' in args.keys():
+        new_day = datetime.strptime(args['day'], '%Y-%m-%d').date()
+    else:
+        new_day = lesson.day
+
+    if 'start' in args.keys():
+        nl_s = datetime.strptime(args['start'], '%H:%M:%S').time() # para adotar a mesma notação do POST
+    else:
+        nl_s = lesson.expected_start
+    
+    if 'finish' in args.keys():
+        nl_f = datetime.strptime(args['finish'], '%H:%M:%S').time() # para adotar a mesma notação do POST
+    else:
+        nl_f = lesson.expected_finish
+    # não faz sentido querer atualizar o aluno porque ele quem faz a requisição de update
+    # semelhante ao que ocorre no create, preciso verificar a disponibilidade do instrutor e do aluno
+
+    # verificando a disponibilidade do instrutor
+    lesson_query = select(l for l in Lesson if (l.instructor.ID == new_instructor.ID)) # query com todas as aulas de dado instrutor
+    for l in lesson_query:
+        if l.day == new_day: # por algum motivo a comparação de datas não está acusando igualdade         
+            l_s = l.expected_start # expected start for the current lesson of the loop 
+            l_f = l.expected_finish # expected finish for the lesson of the current loop
+            if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
+                return 'O instrutor selecionado não está disponível'           
+
+    # verificando a disponibilidade do aluno
+    student = Student[Lesson[id].student.ID]
+    for lesson in student.lessons:
+        if lesson.day == new_day:
+            l_s = lesson.expected_start
+            l_f = lesson.expected_finish
+            if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
+                return 'O agendamento dessa aula gera conflito na grade horária'  
+
+    # agora é necessário adicionar o objeto instructor ao dicionário args, que será utilizado pelo método set
+    if update_instructor:
+        args['instructor'] = new_instructor
     lesson.set(**args)
     commit()
-    return {"endpoint": "/api/instructors/" + str(lesson.ID)}
+    return {"endpoint": "/api/lessons/" + str(id)}
 
 @db_session
 def get_available_instructors(day: date, start: time, finish: time):
     """Returns a list of instructors IDs for those instuctors who have no classes scheduled between start and finish on a given day"""
     available_instructors_ID = []
-    instructor_list = Instructor.select() 
-    for instructor in instructor_list:
+    instructor_query = Instructor.select() 
+    for instructor in instructor_query:
         available = True
         for lesson in instructor.lessons:
             l_s = lesson.expected_start
