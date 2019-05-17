@@ -44,6 +44,6 @@ class Lesson(db.Entity):
     expected_start = Required(time)
     expected_finish = Required(time)
     actual_duration = Optional(time)
-    status = Required(int)  # 1 (a fazer), 2 (ocorrendo), 3 (feita),  4 avaliada
+    status = Required(int)  # 1 (a fazer), 2 (ocorrendo), 3 (feita),  4 (avaliada)
     student = Required(Student)
     instructor = Required(Instructor)

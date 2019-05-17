@@ -146,6 +146,7 @@ def get_available_instructors(day: date, start: time, finish: time):
             l_f = lesson.expected_finish
             if (((l_s <= finish) and (finish <= l_f)) or ((l_s <= start) and (start <= l_f)) or ((start < l_s) and (l_f < finish))):
                 available = False
+                break
         if available:
             available_instructors_ID.append(int(instructor.ID))
 
