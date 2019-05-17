@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint
 from flask_restplus import Resource, Api
+from flask_cors import CORS
 from api.endpoints.instructors import ns as instructors_namespace
 from api.endpoints.students import ns as students_namespace
 from api.endpoints.lessons import ns as lessons_namespace
@@ -8,6 +9,7 @@ from settings import *
 from test_functions import populate_database, delete_database
 
 app = Flask(__name__)
+CORS(app) # habilitar requisições interdomínios
 api = Api(app)
 
 

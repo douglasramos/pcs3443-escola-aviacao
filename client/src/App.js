@@ -26,12 +26,9 @@ class App extends Component {
   }
 
   handleClick() {
-
-    console.log('entrei')
     // Get all instructors
     const url = 'http://localhost:8888/api/instructors/' + this.state.InputID
-    console.log(url)
-
+    
     axios.get(url)
       .then(response => this.setState({
 
@@ -44,10 +41,6 @@ class App extends Component {
         address: response.data.address,
 
       }))
-
-      console.log("state")
-      console.log(this.state)
-
   }
 
   handleChange(event) {
