@@ -1,0 +1,14 @@
+{
+  "extends": ["airbnb", "prettier"],
+  "root": true,
+  "plugins": ["prettier"],
+  "rules": {
+    "linebreak-style": 0,
+    "quotes": "error",
+    "prettier/prettier": ["error", {"singleQuote": true, "parser": "flow", "trailingComma": "es5"}],
+    "react/jsx-one-expression-per-line": ["disabled"],
+    "react/destructuring-assignment": ["disabled"],
+    "prefer-template": "off"
+  },
+  "parser": "babel-eslint"
+}

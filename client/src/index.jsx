@@ -1,10 +1,11 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './Post-material.css'
-import PostMaterial from './Post-material';
+import './RegisterInstructor.css';
+import RegisterInstructor from './RegisterInstructor';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<PostMaterial />, document.getElementById('root'));
+ReactDOM.render(<RegisterInstructor />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
