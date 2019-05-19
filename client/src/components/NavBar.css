@@ -1,0 +1,41 @@
+.navbar {
+  flex-grow: 1;
+  padding: 0;
+  text-align: -webkit-center;
+}
+
+.title {
+  flex-grow: 1;
+  text-align: left;
+  text-decoration: none;
+  color: white;
+}
+
+.title:hover {
+    color: white;
+    text-decoration: none;
+}
+
+
+
+.toolbar {
+  /* padding-left: 100px;
+    padding-right: 100px; */
+  max-width: 1400px !important;
+}
+
+.display {
+  display: contents;
+}
+
+.button-w-outline {
+    outline: 0 !important;
+    text-transform: none !important;
+    text-decoration: none;
+    color: white;
+}
+
+.button-w-outline:hover {
+  color: white;
+  text-decoration: none;
+}

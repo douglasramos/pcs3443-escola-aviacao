@@ -1,80 +1,29 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
-import axios from 'axios';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import NavBar from './components/NavBar';
+import DashboardInstructor from './components/DashboardIntructor';
+import DashboardAministrator from './components/DashboardAdministrator';
+import DashboardStudent from './components/DashboardStudent';
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      InputID: 1,
-      name: '',
-      institution: '',
-      graduationDate: '',
-      // licenseNumber: '',
-      // birth_date: '',
-      // courseName: '',
-      // address: '',
-    };
-
-    // why do we need this?
-    this.handleClick = this.handleClick.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleClick() {
-    // Get all instructors
-    const url = 'http://localhost:8888/api/instructors/' + this.state.InputID;
-
-    axios.get(url).then(response =>
-      this.setState({
-        name: response.data.name,
-        institution: response.data.institution,
-        graduationDate: response.data.graduation_date,
-        // license_number: response.data.license_number,
-        // birth_date: response.data.birth_date,
-        // course_name: response.data.course_name,
-        // address: response.data.address,
-      })
-    );
-  }
-
-  handleChange(event) {
-    this.setState({ InputID: event.target.value });
-  }
-
-  render() {
-    return (
-      <div className="margin">
-        <label htmlFor="number">
-          ID:
-          <input
-            type="number"
-            value={this.state.InputID}
-            onChange={this.handleChange}
-          />
-        </label>
+function App() {
+  return (
+    <React.Fragment>
+      <CssBaseline />
+      <Router>
         <div>
-          <button
-            type="button"
-            className="button btn btn-primary"
-            onClick={this.handleClick}
-          >
-            Get instructors
-          </button>
+          <NavBar />
+          <Route exact path="/" component={DashboardAministrator} />
+          <Route path="/dashboard-instructor" component={DashboardInstructor} />
+          <Route
+            path="/dashboard-administrator"
+            component={DashboardAministrator}
+          />
+          <Route path="/dashboard-student" component={DashboardStudent} />
         </div>
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">Nome</h5>
-            <p className="card-text">{this.state.name}</p>
-            <h5 className="card-title">Insituição</h5>
-            <p className="card-text">{this.state.institution}</p>
-            <h5 className="card-title">Data de Formação</h5>
-            <p className="card-text">{this.state.graduationDate}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+      </Router>
+    </React.Fragment>
+  );
 }
-
 export default App;
