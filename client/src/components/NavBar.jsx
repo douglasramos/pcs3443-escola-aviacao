@@ -4,7 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import './NavBar.css';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 function NavBar() {
   return (
@@ -27,24 +27,27 @@ function NavBar() {
             </Typography>
             <Button
               className="button-w-outline"
+              activeClassName="active"
               color="inherit"
-              component={Link}
+              component={NavLink}
               to="/dashboard-administrator"
             >
               Administrador
             </Button>
             <Button
               className="button-w-outline"
+              activeClassName="active"
               color="inherit"
-              component={Link}
+              component={NavLink}
               to="/dashboard-student"
             >
               Aluno
             </Button>
             <Button
               className="button-w-outline"
+              activeClassName="active"
               color="inherit"
-              component={Link}
+              component={NavLink}
               to="/dashboard-instructor"
             >
               Instrutor
