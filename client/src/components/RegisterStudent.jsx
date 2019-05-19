@@ -18,27 +18,31 @@ class RegisterStudent extends Component {
       name: '',
       birthDate: '',
       address: '',
+      nameIsFilled: false,
+      birthDateIsFilled: false,
+      addressIsFilled: false,
       dialogOpen: false,
-      fieldsAreFilled: false,
-      RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' },
+      wasSubmitted: false,
     };
   }
 
   submitNew = () => {
     const url = 'http://localhost:8888/api/students/';
-
-    axios
-      .post(url, {
-        name: this.state.name,
-        birth_date: this.state.birthDate,
-        address: this.state.address,
-      })
-      .then(response => {
-        // eslint-disable-next-line no-console
-        console.log(response.data.endpoint);
-        this.setState({ dialogOpen: true });
-        this.resetFields();
-      });
+    this.setState({ wasSubmitted: true }, () => this.checkFields());
+    if (this.state.nameIsFilled && this.state.birthDateIsFilled && this.state.addressIsFilled) {
+      axios
+        .post(url, {
+          name: this.state.name,
+          birth_date: this.state.birthDate,
+          address: this.state.address,
+        })
+        .then(response => {
+          // eslint-disable-next-line no-console
+          console.log(response.data.endpoint);
+          this.setState({ dialogOpen: true });
+          this.resetFields();
+        });
+    }
   };
 
   resetFields = () => {
@@ -47,6 +51,7 @@ class RegisterStudent extends Component {
         name: '',
         birthDate: '',
         address: '',
+        wasSubmitted: false,
       },
       () => this.checkFields()
     );
@@ -59,16 +64,22 @@ class RegisterStudent extends Component {
   };
 
   checkFields = () => {
-    if (this.state.name !== '' && this.state.birthDate !== '' && this.state.address !== '') {
-      this.setState({
-        fieldsAreFilled: true,
-        RegisterButtonStyle: { backgroundColor: '#2cad58', color: 'white' },
-      });
+    if (this.state.name === '') {
+      this.setState({ nameIsFilled: false });
     } else {
-      this.setState({
-        fieldsAreFilled: false,
-        RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' },
-      });
+      this.setState({ nameIsFilled: true });
+    }
+
+    if (this.state.birthDate === '') {
+      this.setState({ birthDateIsFilled: false });
+    } else {
+      this.setState({ birthDateIsFilled: true });
+    }
+
+    if (this.state.address === '') {
+      this.setState({ addressIsFilled: false });
+    } else {
+      this.setState({ addressIsFilled: true });
     }
   };
 
@@ -108,6 +119,7 @@ class RegisterStudent extends Component {
               variant="outlined"
               margin="normal"
               fullWidth
+              error={!this.state.nameIsFilled && this.state.wasSubmitted}
               value={this.state.name}
               onChange={this.handleChange('name')}
             />
@@ -121,6 +133,7 @@ class RegisterStudent extends Component {
               variant="outlined"
               margin="normal"
               fullWidth
+              error={!this.state.addressIsFilled && this.state.wasSubmitted}
               value={this.state.address}
               onChange={this.handleChange('address')}
             />
@@ -136,6 +149,7 @@ class RegisterStudent extends Component {
               margin="normal"
               InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
               fullWidth
+              error={!this.state.birthDateIsFilled && this.state.wasSubmitted}
               value={this.state.birthDate}
               onChange={this.handleChange('birthDate')}
             />
@@ -148,8 +162,7 @@ class RegisterStudent extends Component {
           <Button
             className="ml-3"
             variant="contained"
-            disabled={!this.state.fieldsAreFilled}
-            style={this.state.RegisterButtonStyle}
+            style={{ backgroundColor: '#2cad58', color: 'white' }}
             onClick={this.submitNew}
           >
             cadastrar

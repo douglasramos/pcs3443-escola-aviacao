@@ -23,32 +23,47 @@ class RegisterInstructor extends Component {
       courseName: '',
       address: '',
       dialogOpen: false,
-      fieldsAreFilled: false,
-      RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' },
+      nameIsFilled: false,
+      institutionIsFilled: false,
+      graduationDateIsFilled: false,
+      licenseNumberIsFilled: false,
+      birthDateIsFilled: false,
+      courseNameIsFilled: false,
+      addressIsFilled: false,
+      wasSubmitted: false,
     };
   }
 
   submitNew = () => {
     // Post a new instructor
-
     const url = 'http://localhost:8888/api/instructors/';
-
-    axios
-      .post(url, {
-        name: this.state.name,
-        institution: this.state.institution,
-        graduation_date: this.state.graduationDate,
-        license_number: this.state.licenseNumber,
-        birth_date: this.state.birthDate,
-        course_name: this.state.courseName,
-        address: this.state.address,
-      })
-      .then(response => {
-        // eslint-disable-next-line no-console
-        console.log(response.data.endpoint);
-        this.setState({ dialogOpen: true });
-        this.resetFields();
-      });
+    this.setState({ wasSubmitted: true }, () => this.checkFields());
+    if (
+      this.state.nameIsFilled &&
+      this.state.institutionIsFilled &&
+      this.state.graduationDateIsFilled &&
+      this.state.licenseNumberIsFilled &&
+      this.state.birthDateIsFilled &&
+      this.state.courseNameIsFilled &&
+      this.state.addressIsFilled
+    ) {
+      axios
+        .post(url, {
+          name: this.state.name,
+          institution: this.state.institution,
+          graduation_date: this.state.graduationDate,
+          license_number: this.state.licenseNumber,
+          birth_date: this.state.birthDate,
+          course_name: this.state.courseName,
+          address: this.state.address,
+        })
+        .then(response => {
+          // eslint-disable-next-line no-console
+          console.log(response.data.endpoint);
+          this.setState({ dialogOpen: true });
+          this.resetFields();
+        });
+    }
   };
 
   resetFields = () => {
@@ -61,6 +76,7 @@ class RegisterInstructor extends Component {
         birthDate: '',
         courseName: '',
         address: '',
+        wasSubmitted: false,
       },
       () => this.checkFields()
     );
@@ -73,24 +89,40 @@ class RegisterInstructor extends Component {
   };
 
   checkFields = () => {
-    if (
-      this.state.name !== '' &&
-      this.state.institution !== '' &&
-      this.state.graduationDate !== '' &&
-      this.state.licenseNumber !== '' &&
-      this.state.birthDate !== '' &&
-      this.state.courseName !== '' &&
-      this.state.address !== ''
-    ) {
-      this.setState({
-        fieldsAreFilled: true,
-        RegisterButtonStyle: { backgroundColor: '#2cad58', color: 'white' },
-      });
+    if (this.state.name === '') {
+      this.setState({ nameIsFilled: false });
     } else {
-      this.setState({
-        fieldsAreFilled: false,
-        RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' },
-      });
+      this.setState({ nameIsFilled: true });
+    }
+    if (this.state.institution === '') {
+      this.setState({ institutionIsFilled: false });
+    } else {
+      this.setState({ institutionIsFilled: true });
+    }
+    if (this.state.graduationDate === '') {
+      this.setState({ graduationDateIsFilled: false });
+    } else {
+      this.setState({ graduationDateIsFilled: true });
+    }
+    if (this.state.licenseNumber === '') {
+      this.setState({ licenseNumberIsFilled: false });
+    } else {
+      this.setState({ licenseNumberIsFilled: true });
+    }
+    if (this.state.birthDate === '') {
+      this.setState({ birthDateIsFilled: false });
+    } else {
+      this.setState({ birthDateIsFilled: true });
+    }
+    if (this.state.courseName === '') {
+      this.setState({ courseNameIsFilled: false });
+    } else {
+      this.setState({ courseNameIsFilled: true });
+    }
+    if (this.state.address === '') {
+      this.setState({ addressIsFilled: false });
+    } else {
+      this.setState({ addressIsFilled: true });
     }
   };
 
@@ -131,6 +163,7 @@ class RegisterInstructor extends Component {
               variant="outlined"
               margin="normal"
               fullWidth
+              error={!this.state.nameIsFilled && this.state.wasSubmitted}
               value={this.state.name}
               onChange={this.handleChange('name')}
             />
@@ -144,6 +177,7 @@ class RegisterInstructor extends Component {
               variant="outlined"
               margin="normal"
               fullWidth
+              error={!this.state.addressIsFilled && this.state.wasSubmitted}
               value={this.state.address}
               onChange={this.handleChange('address')}
             />
@@ -159,6 +193,7 @@ class RegisterInstructor extends Component {
               margin="normal"
               InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
               fullWidth
+              error={!this.state.birthDateIsFilled && this.state.wasSubmitted}
               value={this.state.birthDate}
               onChange={this.handleChange('birthDate')}
             />
@@ -172,6 +207,7 @@ class RegisterInstructor extends Component {
               variant="outlined"
               margin="normal"
               fullWidth
+              error={!this.state.licenseNumberIsFilled && this.state.wasSubmitted}
               value={this.state.licenseNumber}
               onChange={this.handleChange('licenseNumber')}
             />
@@ -185,6 +221,7 @@ class RegisterInstructor extends Component {
               variant="outlined"
               margin="normal"
               fullWidth
+              error={!this.state.institutionIsFilled && this.state.wasSubmitted}
               value={this.state.institution}
               onChange={this.handleChange('institution')}
             />
@@ -198,6 +235,7 @@ class RegisterInstructor extends Component {
               variant="outlined"
               margin="normal"
               fullWidth
+              error={!this.state.courseNameIsFilled && this.state.wasSubmitted}
               value={this.state.courseName}
               onChange={this.handleChange('courseName')}
             />
@@ -212,6 +250,7 @@ class RegisterInstructor extends Component {
               margin="normal"
               InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
               fullWidth
+              error={!this.state.graduationDateIsFilled && this.state.wasSubmitted}
               value={this.state.graduationDate}
               onChange={this.handleChange('graduationDate')}
             />
@@ -224,8 +263,7 @@ class RegisterInstructor extends Component {
           <Button
             className="ml-3"
             variant="contained"
-            disabled={!this.state.fieldsAreFilled}
-            style={this.state.RegisterButtonStyle}
+            style={{ backgroundColor: '#2cad58', color: 'white' }}
             onClick={this.submitNew}
           >
             cadastrar
