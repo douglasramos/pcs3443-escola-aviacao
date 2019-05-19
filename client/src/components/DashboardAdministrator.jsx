@@ -5,15 +5,15 @@ import RegisterStudent from './RegisterStudent';
 
 const registerType = {
   student: 1,
-  instructor: 2,
+  instructor: 2
 };
 
-class DashboardAministrator extends Component {
+class DashboardAdministrator extends Component {
   constructor() {
     super();
 
     this.state = {
-      registerType: null,
+      registerType: null
     };
   }
 
@@ -53,4 +53,4 @@ class DashboardAministrator extends Component {
   }
 }
 
-export default DashboardAministrator;
+export default DashboardAdministrator;
