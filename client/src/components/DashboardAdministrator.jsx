@@ -1,54 +1,48 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
-import RegisterInstructor from './RegisterInstructor';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import { Link } from 'react-router-dom';
 import RegisterStudent from './RegisterStudent';
+import RegisterInstructor from './RegisterInstructor';
+import './DashboardAdministrator.css';
 
-const registerType = {
-  student: 1,
-  instructor: 2,
-};
+function LinkTab(props) {
+  return <Tab component={Link} {...props} />;
+}
 
 class DashboardAdministrator extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      registerType: null,
+      dashboardTab: 0,
     };
   }
 
-  changeTypeRegister = type => {
-    this.setState({ registerType: type });
+  handleChange = (_event, value) => {
+    this.setState({ dashboardTab: value });
   };
 
   render() {
+    const { dashboardTab } = this.state;
+
     return (
-      <div className="container mt-3">
-        <div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => this.changeTypeRegister(registerType.student)}
-          >
-            Aluno
-          </Button>
-          <Button
-            className="ml-3"
-            variant="contained"
-            style={{ backgroundColor: '#2cad58', color: 'white' }}
-            onClick={() => this.changeTypeRegister(registerType.instructor)}
-          >
-            Instrutor
-          </Button>
+      <React.Fragment>
+        <Tabs
+          variant="fullWidth"
+          indicatorColor="primary"
+          value={dashboardTab}
+          onChange={this.handleChange}
+        >
+          <LinkTab label="Aluno" to={`${this.props.match.url}/student`} />
+          <LinkTab label="Instrutor" to={`${this.props.match.url}/instructor`} />
+        </Tabs>
+        <div className="container mt-3">
+          {this.state.dashboardTab === 0 && <RegisterStudent />}
+          {this.state.dashboardTab === 1 && <RegisterInstructor />}
         </div>
-        <div className="mt-5">
-          {this.state.registerType === registerType.instructor ? (
-            <RegisterInstructor />
-          ) : (
-            <RegisterStudent />
-          )}
-        </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

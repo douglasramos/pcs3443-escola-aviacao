@@ -7,14 +7,9 @@
 .title {
   flex-grow: 1;
   text-align: left;
-  text-decoration: none;
   color: white;
 }
 
-.title:hover {
-  color: white;
-  text-decoration: none;
-}
 
 .display {
   display: contents;
@@ -23,13 +18,7 @@
 .button-w-outline {
   outline: 0 !important;
   text-transform: none !important;
-  text-decoration: none;
   color: white;
-}
-
-.button-w-outline:hover {
-  color: white;
-  text-decoration: none;
 }
 
 .display-logo-name {
