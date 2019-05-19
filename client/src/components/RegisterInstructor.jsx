@@ -5,6 +5,10 @@ import Grid from '@material-ui/core/Grid';
 import './RegisterInstructor.css';
 import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 class RegisterInstructor extends Component {
   constructor() {
@@ -18,14 +22,16 @@ class RegisterInstructor extends Component {
       birthDate: '',
       courseName: '',
       address: '',
+      dialogOpen: false,
+      fieldsAreFilled: false,
+      RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' }
     };
   }
 
   submitNew = () => {
     // Post a new instructor
-    const url = 'http://localhost:8888/api/instructors/';
 
-    this.displayStateOnConsole();
+    const url = 'http://localhost:8888/api/instructors/';
 
     axios
       .post(url, {
@@ -35,24 +41,29 @@ class RegisterInstructor extends Component {
         license_number: this.state.licenseNumber,
         birth_date: this.state.birthDate,
         course_name: this.state.courseName,
-        address: this.state.address,
+        address: this.state.address
       })
       .then(response => {
         // eslint-disable-next-line no-console
         console.log(response.data.endpoint);
+        this.setState({ dialogOpen: true });
+        this.resetFields();
       });
   };
 
-  resetState = () => {
-    this.setState({
-      name: '',
-      institution: '',
-      graduationDate: '',
-      licenseNumber: '',
-      birthDate: '',
-      courseName: '',
-      address: '',
-    });
+  resetFields = () => {
+    this.setState(
+      {
+        name: '',
+        institution: '',
+        graduationDate: '',
+        licenseNumber: '',
+        birthDate: '',
+        courseName: '',
+        address: ''
+      },
+      () => this.checkFields()
+    );
   };
 
   displayStateOnConsole = () => {
@@ -61,8 +72,34 @@ class RegisterInstructor extends Component {
     console.log(this.state);
   };
 
+  checkFields = () => {
+    if (
+      this.state.name !== '' &&
+      this.state.institution !== '' &&
+      this.state.graduationDate !== '' &&
+      this.state.licenseNumber !== '' &&
+      this.state.birthDate !== '' &&
+      this.state.courseName !== '' &&
+      this.state.address !== ''
+    ) {
+      this.setState({
+        fieldsAreFilled: true,
+        RegisterButtonStyle: { backgroundColor: '#2cad58', color: 'white' }
+      });
+    } else {
+      this.setState({
+        fieldsAreFilled: false,
+        RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' }
+      });
+    }
+  };
+
   handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
+    this.setState({ [name]: event.target.value }, () => this.checkFields()); // essa notação garante que a verificação de campos vazios ocorra depois que o SetState terminar
+  };
+
+  handleDialogClose = () => {
+    this.setState({ dialogOpen: false });
   };
 
   render() {
@@ -71,6 +108,19 @@ class RegisterInstructor extends Component {
         <Typography component="h4" variant="h4" gutterBottom>
           Cadastrar Instrutor
         </Typography>
+        <Dialog
+          open={this.state.dialogOpen}
+          onClose={this.handleDialogClose}
+          aria-labelledby="registerSucessTitle"
+          aria-describedby="registerSuccessText"
+        >
+          <DialogTitle id="registerSucessTitle">SUCESSO</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="registerSuccessText">
+              Novo instrutor cadastrado
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
         <Grid container spacing={16}>
           <Grid item xs={12} sm={6} lg={4}>
             <TextField
@@ -168,13 +218,14 @@ class RegisterInstructor extends Component {
           </Grid>
         </Grid>
         <div className="mt-3 text-right">
-          <Button variant="outlined" onClick={this.resetState}>
+          <Button variant="outlined" onClick={this.resetFields}>
             cancelar
           </Button>
           <Button
             className="ml-3"
             variant="contained"
-            style={{ backgroundColor: '#2cad58', color: 'white' }}
+            disabled={!this.state.fieldsAreFilled}
+            style={this.state.RegisterButtonStyle}
             onClick={this.submitNew}
           >
             cadastrar

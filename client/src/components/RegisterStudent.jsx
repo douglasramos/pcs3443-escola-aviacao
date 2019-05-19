@@ -5,6 +5,10 @@ import Grid from '@material-ui/core/Grid';
 import './RegisterStudent.css';
 import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 class RegisterStudent extends Component {
   constructor() {
@@ -14,6 +18,9 @@ class RegisterStudent extends Component {
       name: '',
       birthDate: '',
       address: '',
+      dialogOpen: false,
+      fieldsAreFilled: false,
+      RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' }
     };
   }
 
@@ -24,20 +31,25 @@ class RegisterStudent extends Component {
       .post(url, {
         name: this.state.name,
         birth_date: this.state.birthDate,
-        address: this.state.address,
+        address: this.state.address
       })
       .then(response => {
         // eslint-disable-next-line no-console
         console.log(response.data.endpoint);
+        this.setState({ dialogOpen: true });
+        this.resetFields();
       });
   };
 
-  resetState = () => {
-    this.setState({
-      name: '',
-      birthDate: '',
-      address: '',
-    });
+  resetFields = () => {
+    this.setState(
+      {
+        name: '',
+        birthDate: '',
+        address: ''
+      },
+      () => this.checkFields()
+    );
   };
 
   displayStateOnConsole = () => {
@@ -46,13 +58,26 @@ class RegisterStudent extends Component {
     console.log(this.state);
   };
 
-  handleChange = name => event => {
-    this.setState({ [name]: event.target.value });
+  checkFields = () => {
+    if (this.state.name !== '' && this.state.birthDate !== '' && this.state.address !== '') {
+      this.setState({
+        fieldsAreFilled: true,
+        RegisterButtonStyle: { backgroundColor: '#2cad58', color: 'white' }
+      });
+    } else {
+      this.setState({
+        fieldsAreFilled: false,
+        RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' }
+      });
+    }
   };
 
-  toggle = () => {
-    const currentState = this.state.type;
-    this.setState({ type: !currentState });
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value }, () => this.checkFields());
+  };
+
+  handleDialogClose = () => {
+    this.setState({ dialogOpen: false });
   };
 
   render() {
@@ -61,6 +86,18 @@ class RegisterStudent extends Component {
         <Typography component="h4" variant="h4" gutterBottom>
           Cadastrar Aluno
         </Typography>
+        <Dialog
+          open={this.state.dialogOpen}
+          onClose={this.handleDialogClose}
+          aria-labelledby="registerSucessTitle"
+          aria-describedby="registerSuccessText"
+        >
+          <DialogTitle id="registerSucessTitle">SUCESSO</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="registerSuccessText">Novo aluno cadastrado</DialogContentText>
+          </DialogContent>
+        </Dialog>
+
         <Grid container spacing={16}>
           <Grid item xs={12}>
             <TextField
@@ -105,13 +142,14 @@ class RegisterStudent extends Component {
           </Grid>
         </Grid>
         <div className="mt-3 text-right">
-          <Button variant="outlined" onClick={this.resetState}>
+          <Button variant="outlined" onClick={this.resetFields}>
             cancelar
           </Button>
           <Button
             className="ml-3"
             variant="contained"
-            style={{ backgroundColor: '#2cad58', color: 'white' }}
+            disabled={!this.state.fieldsAreFilled}
+            style={this.state.RegisterButtonStyle}
             onClick={this.submitNew}
           >
             cadastrar

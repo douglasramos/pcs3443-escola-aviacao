@@ -4,9 +4,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import NavBar from './components/NavBar';
 import DashboardInstructor from './components/DashboardIntructor';
-import DashboardAministrator from './components/DashboardAdministrator';
+import DashboardAdministrator from './components/DashboardAdministrator';
 import DashboardStudent from './components/DashboardStudent';
-import RegisterInstructor from './components/RegisterInstructor';
 
 function App() {
   return (
@@ -15,12 +14,9 @@ function App() {
       <Router>
         <div>
           <NavBar />
-          <Route exact path="/" component={DashboardAministrator} />
+          <Route exact path="/" component={DashboardAdministrator} />
           <Route path="/dashboard-instructor" component={DashboardInstructor} />
-          <Route
-            path="/dashboard-administrator"
-            component={DashboardAministrator}
-          />
+          <Route path="/dashboard-administrator" component={DashboardAdministrator} />
           <Route path="/dashboard-student" component={DashboardStudent} />
         </div>
       </Router>
