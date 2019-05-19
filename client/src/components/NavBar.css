@@ -42,11 +42,13 @@
 
 @media only screen and (min-width: 400px) {
   .display-logo-name {
-    display: block !important;;
+    display: block !important;
   }
   .display-logo {
     display: none;
   }
 }
 
-
+.active {
+  background-color: #2d397d !important;
+}
