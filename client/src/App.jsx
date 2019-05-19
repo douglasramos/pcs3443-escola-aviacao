@@ -6,6 +6,7 @@ import NavBar from './components/NavBar';
 import DashboardInstructor from './components/DashboardIntructor';
 import DashboardAministrator from './components/DashboardAdministrator';
 import DashboardStudent from './components/DashboardStudent';
+import RegisterInstructor from './components/RegisterInstructor';
 
 function App() {
   return (

@@ -3,8 +3,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import './NavBar.css';
 import { Link } from 'react-router-dom';
 
@@ -12,23 +10,19 @@ function NavBar() {
   return (
     <div className="navbar">
       <AppBar position="static">
-        <Toolbar className="toolbar">
-          <IconButton
-            className="button-w-outline"
-            edge="start"
-            color="inherit"
-            aria-label="Menu"
-          >
-            <MenuIcon />
-          </IconButton>
+        <Toolbar>
           <nav className="display">
+            {/* Device Pequeno */}
+            <span className="fas fa-plane-departure mr-2 display-logo" />
+            {/* Device Grandes */}
             <Typography
               variant="h6"
               color="inherit"
-              className="title"
+              className="title display-logo-name"
               component={Link}
               to="/"
             >
+              <span className="fas fa-plane-departure mr-2" />
               Voe Mais
             </Typography>
             <Button
