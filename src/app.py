@@ -9,7 +9,7 @@ from settings import *
 from test_functions import populate_database, delete_database
 
 app = Flask(__name__)
-CORS(app) # habilitar requisições interdomínios
+CORS(app)  # habilitar requisições interdomínios
 api = Api(app)
 
 
@@ -37,7 +37,7 @@ def initialize_app(app):
 
     initialize_database()
     populate_database()  # preenche as tabelas Student e Instructor caso estejam vazias
-    #delete_database() # remove todas as tabelas do banco de dados, independetemente de estarem vazias ou não
+    # delete_database() # remove todas as tabelas do banco de dados, independetemente de estarem vazias ou não
 
 def main():
     initialize_app(app)
