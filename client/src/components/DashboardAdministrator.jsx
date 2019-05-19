@@ -5,7 +5,7 @@ import RegisterStudent from './RegisterStudent';
 
 const registerType = {
   student: 1,
-  instructor: 2
+  instructor: 2,
 };
 
 class DashboardAdministrator extends Component {
@@ -13,7 +13,7 @@ class DashboardAdministrator extends Component {
     super();
 
     this.state = {
-      registerType: null
+      registerType: null,
     };
   }
 
