@@ -7,5 +7,6 @@
     "python.linting.pep8Args": [
         "--ignore=E501, E251, E402,E266"
     ],
-    "python.envFile": "${workspaceFolder}/.env"
+    "python.envFile": "${workspaceFolder}/.env",
+    "prettier.eslintIntegration": true
 }

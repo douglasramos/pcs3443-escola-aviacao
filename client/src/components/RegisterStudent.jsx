@@ -20,7 +20,7 @@ class RegisterStudent extends Component {
       address: '',
       dialogOpen: false,
       fieldsAreFilled: false,
-      RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' }
+      RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' },
     };
   }
 
@@ -31,7 +31,7 @@ class RegisterStudent extends Component {
       .post(url, {
         name: this.state.name,
         birth_date: this.state.birthDate,
-        address: this.state.address
+        address: this.state.address,
       })
       .then(response => {
         // eslint-disable-next-line no-console
@@ -46,7 +46,7 @@ class RegisterStudent extends Component {
       {
         name: '',
         birthDate: '',
-        address: ''
+        address: '',
       },
       () => this.checkFields()
     );
@@ -62,12 +62,12 @@ class RegisterStudent extends Component {
     if (this.state.name !== '' && this.state.birthDate !== '' && this.state.address !== '') {
       this.setState({
         fieldsAreFilled: true,
-        RegisterButtonStyle: { backgroundColor: '#2cad58', color: 'white' }
+        RegisterButtonStyle: { backgroundColor: '#2cad58', color: 'white' },
       });
     } else {
       this.setState({
         fieldsAreFilled: false,
-        RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' }
+        RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' },
       });
     }
   };

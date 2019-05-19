@@ -24,7 +24,7 @@ class RegisterInstructor extends Component {
       address: '',
       dialogOpen: false,
       fieldsAreFilled: false,
-      RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' }
+      RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' },
     };
   }
 
@@ -41,7 +41,7 @@ class RegisterInstructor extends Component {
         license_number: this.state.licenseNumber,
         birth_date: this.state.birthDate,
         course_name: this.state.courseName,
-        address: this.state.address
+        address: this.state.address,
       })
       .then(response => {
         // eslint-disable-next-line no-console
@@ -60,7 +60,7 @@ class RegisterInstructor extends Component {
         licenseNumber: '',
         birthDate: '',
         courseName: '',
-        address: ''
+        address: '',
       },
       () => this.checkFields()
     );
@@ -84,12 +84,12 @@ class RegisterInstructor extends Component {
     ) {
       this.setState({
         fieldsAreFilled: true,
-        RegisterButtonStyle: { backgroundColor: '#2cad58', color: 'white' }
+        RegisterButtonStyle: { backgroundColor: '#2cad58', color: 'white' },
       });
     } else {
       this.setState({
         fieldsAreFilled: false,
-        RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' }
+        RegisterButtonStyle: { backgroundColor: '#808080', color: 'black' },
       });
     }
   };
