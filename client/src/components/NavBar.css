@@ -12,16 +12,8 @@
 }
 
 .title:hover {
-    color: white;
-    text-decoration: none;
-}
-
-
-
-.toolbar {
-  /* padding-left: 100px;
-    padding-right: 100px; */
-  max-width: 1400px !important;
+  color: white;
+  text-decoration: none;
 }
 
 .display {
@@ -29,13 +21,32 @@
 }
 
 .button-w-outline {
-    outline: 0 !important;
-    text-transform: none !important;
-    text-decoration: none;
-    color: white;
+  outline: 0 !important;
+  text-transform: none !important;
+  text-decoration: none;
+  color: white;
 }
 
 .button-w-outline:hover {
   color: white;
   text-decoration: none;
 }
+
+.display-logo-name {
+  display: none !important;
+}
+
+.display-logo {
+  display: block;
+}
+
+@media only screen and (min-width: 400px) {
+  .display-logo-name {
+    display: block !important;;
+  }
+  .display-logo {
+    display: none;
+  }
+}
+
+
