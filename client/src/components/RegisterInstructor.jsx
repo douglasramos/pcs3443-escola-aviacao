@@ -31,13 +31,14 @@ class RegisterInstructor extends Component {
       courseNameIsFilled: false,
       addressIsFilled: false,
       wasSubmitted: false,
+      responseID: '',
     };
   }
 
   submitNew = () => {
     // Post a new instructor
     const url = 'http://localhost:8888/api/instructors/';
-    this.setState({ wasSubmitted: true }, () => this.checkFields());
+    this.setState({ wasSubmitted: true });
     if (
       this.state.nameIsFilled &&
       this.state.institutionIsFilled &&
@@ -58,28 +59,33 @@ class RegisterInstructor extends Component {
           address: this.state.address,
         })
         .then(response => {
-          // eslint-disable-next-line no-console
-          console.log(response.data.endpoint);
-          this.setState({ dialogOpen: true });
-          this.resetFields();
+          const responseString = response.data.endpoint;
+          const ID = responseString.split('api/instructors/').pop();
+          this.setState({ responseID: ID }, () => this.setState({ dialogOpen: true }));
         });
     }
   };
 
-  resetFields = () => {
-    this.setState(
-      {
-        name: '',
-        institution: '',
-        graduationDate: '',
-        licenseNumber: '',
-        birthDate: '',
-        courseName: '',
-        address: '',
-        wasSubmitted: false,
-      },
-      () => this.checkFields()
-    );
+  resetState = () => {
+    this.setState({
+      name: '',
+      institution: '',
+      graduationDate: '',
+      licenseNumber: '',
+      birthDate: '',
+      courseName: '',
+      address: '',
+      dialogOpen: false,
+      nameIsFilled: false,
+      institutionIsFilled: false,
+      graduationDateIsFilled: false,
+      licenseNumberIsFilled: false,
+      birthDateIsFilled: false,
+      courseNameIsFilled: false,
+      addressIsFilled: false,
+      wasSubmitted: false,
+      responseID: '',
+    });
   };
 
   displayStateOnConsole = () => {
@@ -88,57 +94,33 @@ class RegisterInstructor extends Component {
     console.log(this.state);
   };
 
-  checkFields = () => {
-    if (this.state.name === '') {
-      this.setState({ nameIsFilled: false });
-    } else {
-      this.setState({ nameIsFilled: true });
-    }
-    if (this.state.institution === '') {
-      this.setState({ institutionIsFilled: false });
-    } else {
-      this.setState({ institutionIsFilled: true });
-    }
-    if (this.state.graduationDate === '') {
-      this.setState({ graduationDateIsFilled: false });
-    } else {
-      this.setState({ graduationDateIsFilled: true });
-    }
-    if (this.state.licenseNumber === '') {
-      this.setState({ licenseNumberIsFilled: false });
-    } else {
-      this.setState({ licenseNumberIsFilled: true });
-    }
-    if (this.state.birthDate === '') {
-      this.setState({ birthDateIsFilled: false });
-    } else {
-      this.setState({ birthDateIsFilled: true });
-    }
-    if (this.state.courseName === '') {
-      this.setState({ courseNameIsFilled: false });
-    } else {
-      this.setState({ courseNameIsFilled: true });
-    }
-    if (this.state.address === '') {
-      this.setState({ addressIsFilled: false });
-    } else {
-      this.setState({ addressIsFilled: true });
-    }
+  handleChange = event => {
+    // é preciso salvar as informações de event em constantes pois na chamada de checkField o event não é preservado
+    const eventName = String(event.target.name);
+    const eventValue = event.target.value;
+    this.setState({ [event.target.name]: event.target.value }, () =>
+      this.checkField(eventName, eventValue)
+    );
   };
 
-  handleChange = name => event => {
-    this.setState({ [name]: event.target.value }, () => this.checkFields()); // essa notação garante que a verificação de campos vazios ocorra depois que o SetState terminar
+  checkField = (fieldName, value) => {
+    const fieldNameIsFilled = `${String(fieldName)}IsFilled`;
+    if (value !== '') {
+      this.setState({ [fieldNameIsFilled]: true });
+    } else {
+      this.setState({ [fieldNameIsFilled]: false });
+    }
   };
 
   handleDialogClose = () => {
-    this.setState({ dialogOpen: false });
+    this.setState({ dialogOpen: false }, this.resetState());
   };
 
   render() {
     return (
       <div>
         <Typography component="h4" variant="h4" gutterBottom>
-          Cadastrar Instrutor
+          Cadastro de Instrutor
         </Typography>
         <Dialog
           open={this.state.dialogOpen}
@@ -149,7 +131,7 @@ class RegisterInstructor extends Component {
           <DialogTitle id="registerSucessTitle">SUCESSO</DialogTitle>
           <DialogContent>
             <DialogContentText id="registerSuccessText">
-              Novo instrutor cadastrado
+              Novo instrutor cadastrado. ID: {this.state.responseID}
             </DialogContentText>
           </DialogContent>
         </Dialog>
@@ -159,13 +141,14 @@ class RegisterInstructor extends Component {
               id="TextField_name"
               label="Nome"
               type="text"
+              name="name"
               required
               variant="outlined"
               margin="normal"
               fullWidth
               error={!this.state.nameIsFilled && this.state.wasSubmitted}
               value={this.state.name}
-              onChange={this.handleChange('name')}
+              onChange={this.handleChange}
             />
           </Grid>
           <Grid item xs={12} sm={6} lg={5}>
@@ -173,13 +156,14 @@ class RegisterInstructor extends Component {
               id="TextField_address"
               label="Endereço"
               type="text"
+              name="address"
               required
               variant="outlined"
               margin="normal"
               fullWidth
               error={!this.state.addressIsFilled && this.state.wasSubmitted}
               value={this.state.address}
-              onChange={this.handleChange('address')}
+              onChange={this.handleChange}
             />
           </Grid>
           <Grid item xs={12} sm={6} lg={3}>
@@ -187,6 +171,7 @@ class RegisterInstructor extends Component {
               id="TextField_birth_date"
               label="Data de Nascimento"
               type="date"
+              name="birthDate"
               autoComplete="new-password"
               required
               variant="outlined"
@@ -195,7 +180,7 @@ class RegisterInstructor extends Component {
               fullWidth
               error={!this.state.birthDateIsFilled && this.state.wasSubmitted}
               value={this.state.birthDate}
-              onChange={this.handleChange('birthDate')}
+              onChange={this.handleChange}
             />
           </Grid>
           <Grid item xs={12} sm={6} lg={3}>
@@ -203,13 +188,14 @@ class RegisterInstructor extends Component {
               id="TextField_license_number"
               label="Número do brevê"
               type="number"
+              name="licenseNumber"
               required
               variant="outlined"
               margin="normal"
               fullWidth
               error={!this.state.licenseNumberIsFilled && this.state.wasSubmitted}
               value={this.state.licenseNumber}
-              onChange={this.handleChange('licenseNumber')}
+              onChange={this.handleChange}
             />
           </Grid>
           <Grid item xs={12} sm={6} lg={3}>
@@ -217,13 +203,14 @@ class RegisterInstructor extends Component {
               id="TextField_institution"
               label="Instituição cursada"
               type="text"
+              name="institution"
               required
               variant="outlined"
               margin="normal"
               fullWidth
               error={!this.state.institutionIsFilled && this.state.wasSubmitted}
               value={this.state.institution}
-              onChange={this.handleChange('institution')}
+              onChange={this.handleChange}
             />
           </Grid>
           <Grid item xs={12} sm={6} lg={3}>
@@ -231,13 +218,14 @@ class RegisterInstructor extends Component {
               id="TextField_course_name"
               label="Nome do curso"
               type="text"
+              name="courseName"
               required
               variant="outlined"
               margin="normal"
               fullWidth
               error={!this.state.courseNameIsFilled && this.state.wasSubmitted}
               value={this.state.courseName}
-              onChange={this.handleChange('courseName')}
+              onChange={this.handleChange}
             />
           </Grid>
           <Grid item xs={12} sm={6} lg={3}>
@@ -245,6 +233,7 @@ class RegisterInstructor extends Component {
               id="TextField_graduation_date"
               label="Data de conclusão de curso"
               type="date"
+              name="graduationDate"
               required
               variant="outlined"
               margin="normal"
@@ -252,12 +241,12 @@ class RegisterInstructor extends Component {
               fullWidth
               error={!this.state.graduationDateIsFilled && this.state.wasSubmitted}
               value={this.state.graduationDate}
-              onChange={this.handleChange('graduationDate')}
+              onChange={this.handleChange}
             />
           </Grid>
         </Grid>
         <div className="mt-3 text-right">
-          <Button variant="outlined" onClick={this.resetFields}>
+          <Button variant="outlined" onClick={this.resetState}>
             cancelar
           </Button>
           <Button

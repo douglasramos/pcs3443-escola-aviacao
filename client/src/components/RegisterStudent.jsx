@@ -23,12 +23,13 @@ class RegisterStudent extends Component {
       addressIsFilled: false,
       dialogOpen: false,
       wasSubmitted: false,
+      responseID: '',
     };
   }
 
   submitNew = () => {
     const url = 'http://localhost:8888/api/students/';
-    this.setState({ wasSubmitted: true }, () => this.checkFields());
+    this.setState({ wasSubmitted: true });
     if (this.state.nameIsFilled && this.state.birthDateIsFilled && this.state.addressIsFilled) {
       axios
         .post(url, {
@@ -37,24 +38,24 @@ class RegisterStudent extends Component {
           address: this.state.address,
         })
         .then(response => {
-          // eslint-disable-next-line no-console
-          console.log(response.data.endpoint);
-          this.setState({ dialogOpen: true });
-          this.resetFields();
+          const responseString = response.data.endpoint;
+          const ID = responseString.split('api/students/').pop();
+          this.setState({ responseID: ID }, () => this.setState({ dialogOpen: true }));
         });
     }
   };
 
-  resetFields = () => {
-    this.setState(
-      {
-        name: '',
-        birthDate: '',
-        address: '',
-        wasSubmitted: false,
-      },
-      () => this.checkFields()
-    );
+  resetState = () => {
+    this.setState({
+      name: '',
+      birthDate: '',
+      address: '',
+      nameIsFilled: false,
+      birthDateIsFilled: false,
+      addressIsFilled: false,
+      wasSubmitted: false,
+      responseID: '',
+    });
   };
 
   displayStateOnConsole = () => {
@@ -63,39 +64,33 @@ class RegisterStudent extends Component {
     console.log(this.state);
   };
 
-  checkFields = () => {
-    if (this.state.name === '') {
-      this.setState({ nameIsFilled: false });
-    } else {
-      this.setState({ nameIsFilled: true });
-    }
-
-    if (this.state.birthDate === '') {
-      this.setState({ birthDateIsFilled: false });
-    } else {
-      this.setState({ birthDateIsFilled: true });
-    }
-
-    if (this.state.address === '') {
-      this.setState({ addressIsFilled: false });
-    } else {
-      this.setState({ addressIsFilled: true });
-    }
+  handleChange = event => {
+    // é preciso salvar as informações de event em constantes pois na chamada de checkField o event não é preservado
+    const eventName = String(event.target.name);
+    const eventValue = event.target.value;
+    this.setState({ [event.target.name]: event.target.value }, () =>
+      this.checkField(eventName, eventValue)
+    );
   };
 
-  handleChange = name => event => {
-    this.setState({ [name]: event.target.value }, () => this.checkFields());
+  checkField = (fieldName, value) => {
+    const fieldNameIsFilled = `${String(fieldName)}IsFilled`;
+    if (value !== '') {
+      this.setState({ [fieldNameIsFilled]: true });
+    } else {
+      this.setState({ [fieldNameIsFilled]: false });
+    }
   };
 
   handleDialogClose = () => {
-    this.setState({ dialogOpen: false });
+    this.setState({ dialogOpen: false }, this.resetState());
   };
 
   render() {
     return (
       <div>
         <Typography component="h4" variant="h4" gutterBottom>
-          Cadastrar Aluno
+          Cadastro de aluno
         </Typography>
         <Dialog
           open={this.state.dialogOpen}
@@ -105,7 +100,9 @@ class RegisterStudent extends Component {
         >
           <DialogTitle id="registerSucessTitle">SUCESSO</DialogTitle>
           <DialogContent>
-            <DialogContentText id="registerSuccessText">Novo aluno cadastrado</DialogContentText>
+            <DialogContentText id="registerSuccessText">
+              Novo aluno cadastrado. ID: {this.state.responseID}
+            </DialogContentText>
           </DialogContent>
         </Dialog>
 
@@ -115,13 +112,14 @@ class RegisterStudent extends Component {
               id="TextField_name"
               label="Nome"
               type="text"
+              name="name"
               required
               variant="outlined"
               margin="normal"
               fullWidth
               error={!this.state.nameIsFilled && this.state.wasSubmitted}
               value={this.state.name}
-              onChange={this.handleChange('name')}
+              onChange={this.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -129,13 +127,14 @@ class RegisterStudent extends Component {
               id="TextField_address"
               label="Endereço"
               type="text"
+              name="address"
               required
               variant="outlined"
               margin="normal"
               fullWidth
               error={!this.state.addressIsFilled && this.state.wasSubmitted}
               value={this.state.address}
-              onChange={this.handleChange('address')}
+              onChange={this.handleChange}
             />
           </Grid>
           <Grid item xs={12}>
@@ -143,6 +142,7 @@ class RegisterStudent extends Component {
               id="TextField_birth_date"
               label="Data de Nascimento"
               type="date"
+              name="birthDate"
               autoComplete="new-password"
               required
               variant="outlined"
@@ -151,12 +151,12 @@ class RegisterStudent extends Component {
               fullWidth
               error={!this.state.birthDateIsFilled && this.state.wasSubmitted}
               value={this.state.birthDate}
-              onChange={this.handleChange('birthDate')}
+              onChange={this.handleChange}
             />
           </Grid>
         </Grid>
         <div className="mt-3 text-right">
-          <Button variant="outlined" onClick={this.resetFields}>
+          <Button variant="outlined" onClick={this.resetState}>
             cancelar
           </Button>
           <Button
