@@ -1,7 +1,7 @@
 from persistance.persistance import db
 from core.models import Student
 
-from flask import jsonify
+from flask import jsonify, abort
 from pony.orm import *
 from pony.orm.serialization import to_dict
 from datetime import datetime, date
@@ -14,7 +14,7 @@ def get_students_list():
     '''Retorna uma lista de dicts com informções de cada aluno'''
 
     students = Student.select()
-    schema = StudentSchema(many = True)
+    schema = StudentSchema(many=True)
     return schema.dump(list(students)).data
 
 
@@ -28,12 +28,12 @@ def get_student(id: int):
             schema = StudentSchema()
             return schema.dump(stud).data
     except ObjectNotFound:
-        return 'Aluno não encontrado'
+        abort(404)
 
 
 @db_session
 def insert_new_student(name: str, address: str, birth_date: date):
-    stud = Student(name = name, address = address, birth_date = birth_date)
+    stud = Student(name=name, address=address, birth_date=birth_date)
     commit()
 
     return {"endpoint": "api/students/" + str(stud.ID)}
@@ -50,7 +50,7 @@ def delete_student(ID: int):
             commit()
             return 'Aluno removido com sucesso!'
     except ObjectNotFound:
-        return 'Aluno não encontrado'
+        abort(404)
 
 
 @db_session
@@ -62,7 +62,7 @@ def update_student(id, **args):
     try:  # verifica-se, inicialmente se o instrutor consta no BD
         stud = Student[id]
     except ObjectNotFound:
-        return 'Aluno não encontrado', 404
+        abort(404)
     # altera somente os argumentos cujas chaves estão explícitas no args
     stud.set(**args)
     commit()

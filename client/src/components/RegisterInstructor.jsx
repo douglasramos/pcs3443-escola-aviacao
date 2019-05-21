@@ -172,7 +172,6 @@ class RegisterInstructor extends Component {
               label="Data de Nascimento"
               type="date"
               name="birthDate"
-              autoComplete="new-password"
               required
               variant="outlined"
               margin="normal"
