@@ -6,6 +6,7 @@ from pony.orm.serialization import to_dict
 from datetime import datetime, date
 
 from core.schemas import InstructorSchema
+from flask import abort
 
 
 @db_session
@@ -27,7 +28,7 @@ def get_instructor(id: int):
             schema = InstructorSchema()
             return schema.dump(instr).data
     except ObjectNotFound:
-        return 'Instrutor não encontrado'
+        abort(404)
 
 
 @db_session
@@ -52,11 +53,11 @@ def delete_instructor(ID: int):
             commit()
             return 'Instrutor removido com sucesso'
     except ObjectNotFound:
-        return 'Instrutor não encontrado'
+        abort(404)
 
 
 @db_session
-def update_instructor(id : int, **args):
+def update_instructor(id: int, **args):
 
     # nem sempre deseja-se alterar todos os parâmetros, por isso uso o dict **args
     # o args só vai conter os campos que eu desejo alterar
@@ -64,7 +65,7 @@ def update_instructor(id : int, **args):
     try:  # verifica-se, inicialmente se o instrutor consta no BD
         instr = Instructor[id]
     except ObjectNotFound:
-        return 'Instrutor não encontrado'
+        abort(404)
     # altera somente os argumentos cujas chaves estão explícitas no args
     instr.set(**args)
     commit()
