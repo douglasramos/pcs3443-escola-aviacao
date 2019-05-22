@@ -4,7 +4,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Link } from 'react-router-dom';
 import RegisterStudent from './RegisterStudent';
+import EditStudent from './EditStudent';
 import RegisterInstructor from './RegisterInstructor';
+import EditInstructor from './EditInstructor';
 import './DashboardAdministrator.css';
 
 function LinkTab(props) {
@@ -41,6 +43,10 @@ class DashboardAdministrator extends Component {
         <div className="container mt-3">
           {this.state.dashboardTab === 0 && <RegisterStudent />}
           {this.state.dashboardTab === 1 && <RegisterInstructor />}
+        </div>
+        <div className="container mt-3">
+          {this.state.dashboardTab === 0 && <EditStudent />}
+          {this.state.dashboardTab === 1 && <EditInstructor />}
         </div>
       </React.Fragment>
     );
