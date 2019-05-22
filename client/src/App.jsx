@@ -8,6 +8,7 @@ import DashboardAdministrator from './components/DashboardAdministrator';
 import DashboardStudent from './components/DashboardStudent';
 import HomeApp from './components/HomeApp';
 import EditInstructor from './components/EditInstructor';
+import EditStudent from './components/EditStudent';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/dashboard-administrator" component={DashboardAdministrator} />
           <Route path="/dashboard-student" component={DashboardStudent} />
           <Route path="/edit-instructor" component={EditInstructor} />
+          <Route path="/edit-student" component={EditStudent} />
         </div>
       </Router>
     </React.Fragment>
