@@ -23,7 +23,10 @@ def get_lessons_list():
 def schedule_class(day: date, expected_start: time, expected_finish: time,
                    student_id: int, instructor_id: int):
     """Agenda uma nova aula, assumindo conhecidos todos os parâmetros"""
-
+    try:
+        student = Student[student_id]
+    except ObjectNotFound:
+        abort(404)
     # definirei essas variáveis para encurtar a notação
     nl_s = expected_start  # new_lesson expected start
     nl_f = expected_finish  # new_lesson expected finish
@@ -38,16 +41,15 @@ def schedule_class(day: date, expected_start: time, expected_finish: time,
             l_s = l.expected_start  # expected start for the current lesson of the loop
             l_f = l.expected_finish  # expected finish for the lesson of the current loop
             if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
-                return 'O instrutor selecionado não está disponível'
+                abort(409, 'Conflito instrutor')
 
     # em seguida, verificamos se a aula que o aluno deseja agendar não gera conflitos em sua grade
-    student = Student[student_id]
     for lesson in student.lessons:
         if (lesson.day == day):
             l_s = lesson.expected_start
             l_f = lesson.expected_finish
             if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
-                return 'O agendamento dessa aula gera conflito na grade horária'
+                abort(409, 'Conflito aluno')
 
     new_lesson = Lesson(day=day, expected_start=expected_start,
                         expected_finish=expected_finish, status=1,
@@ -151,8 +153,8 @@ def update_lesson(id: int, **args):
 @db_session
 def get_available_instructors(day: date, start: time, finish: time):
     """Returns a list of instructors IDs for those instuctors who have no classes scheduled between start and finish on a given day"""
-    available_instructors_ID = []
     instructor_query = Instructor.select()
+    available_instructors = []
     for instructor in instructor_query:
         available = True
         for lesson in instructor.lessons:
@@ -162,6 +164,7 @@ def get_available_instructors(day: date, start: time, finish: time):
                 available = False
                 break
         if available:
-            available_instructors_ID.append(int(instructor.ID))
+            available_instructors.append(
+                str(instructor.ID) + '- ' + str(instructor.name))
 
-    return available_instructors_ID
+    return available_instructors

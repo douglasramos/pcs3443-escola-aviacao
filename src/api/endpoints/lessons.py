@@ -1,7 +1,7 @@
 from flask import request, jsonify
-from flask_restplus import Resource, fields
+from flask_restplus import Resource, fields, reqparse
 from api.api import api
-from application.lesson.use_cases import (get_lessons_list, schedule_class, 
+from application.lesson.use_cases import (get_lessons_list, schedule_class,
                                           get_available_instructors, get_lesson,
                                           delete_lesson, update_lesson)
 from datetime import datetime, date, time
@@ -35,9 +35,11 @@ class lesson(Resource):
             json_data['expected_finish'], "%H:%M:%S").time()
         student_id = json_data['student_id']
         instructor_id = json_data['instructor_id']
-        response = jsonify(schedule_class(day, expected_start, expected_finish, student_id, instructor_id))
+        response = jsonify(schedule_class(
+            day, expected_start, expected_finish, student_id, instructor_id))
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
+
 
 @ns.route('/<int:id>')
 @api.response(404, 'Request Invalid.')
@@ -58,26 +60,30 @@ class lessonByID(Resource):
 
     def put(self, id):
         """Updates a lesson"""
-        json_data = request.get_json(force = True)
-        response = jsonify(update_lesson(id, **json_data)) # indico o instrutor indiretamente, pelo seu ID, ao invés de ter o objeto instrutor como argumento
+        json_data = request.get_json(force=True)
+        # indico o instrutor indiretamente, pelo seu ID, ao invés de ter o objeto instrutor como argumento
+        response = jsonify(update_lesson(id, **json_data))
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
-@ns.route('/availableinstructors') # só para testar se a função get_available_instructors funciona
+
+# só para testar se a função get_available_instructors funciona
+@ns.route('/availableinstructors')
 @api.response(404, 'Request Invalid.')
 @api.response(200, 'Success')
 class available_instructors_class(Resource):
     def get(self):
         """Returns a list with the ID of all the available instructors for given date and start/finish times"""
+        parser = api.parser()
+        parser.add_argument('day')
+        parser.add_argument('start')
+        parser.add_argument('finish')
+        args = parser.parse_args()
 
-        json_data = request.get_json(force=True)
+        day_param = datetime.strptime(args['day'], "%Y-%m-%d").date()
+        start_param = datetime.strptime(args['start'], "%H:%M:%S").time()
+        finish_param = datetime.strptime(args['finish'], "%H:%M:%S").time()
 
-        day = datetime.strptime(
-                        json_data['day'], "%Y-%m-%d").date()
-        start = datetime.strptime(
-                        json_data['start'], "%H:%M:%S").time()
-        finish = datetime.strptime(
-                        json_data['finish'], "%H:%M:%S").time()
-        
-        response = jsonify(get_available_instructors(day, start, finish))
+        response = jsonify(get_available_instructors(
+            day_param, start_param, finish_param))
         return response
