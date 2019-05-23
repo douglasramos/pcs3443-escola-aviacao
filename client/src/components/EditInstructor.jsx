@@ -145,7 +145,6 @@ class EditInstructor extends Component {
 
   editAPI = () => {
     const url = `http://localhost:8888/api/instructors/${this.state.idDisplay}`;
-
     if (
       this.state.edit_nameIsFilled &&
       this.state.edit_institutionIsFilled &&
