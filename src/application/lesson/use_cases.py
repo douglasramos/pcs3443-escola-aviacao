@@ -3,10 +3,11 @@ from core.models import Lesson, Instructor, Student
 
 from pony.orm import *
 from pony.orm.serialization import to_dict
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
 
 from flask import abort
 
+from application.student.use_cases import update_flightTime
 from core.schemas import LessonSchema, InstructorSchema
 
 
@@ -53,9 +54,10 @@ def schedule_class(day: date, expected_start: time, expected_finish: time,
 
     new_lesson = Lesson(day=day, expected_start=expected_start,
                         expected_finish=expected_finish, status=1,
-                        student=Student[student_id], instructor=Instructor[instructor_id])
+                        student=Student[student_id], instructor=Instructor[instructor_id],
+                        grade=0, comment='A aula ainda não foi avaliada')
     commit()
-    return {"endpoint": "/api/lessons"}
+    return {"endpoint": "/api/lessons/" + str(new_lesson.ID)}
 
 
 @db_session
@@ -127,7 +129,7 @@ def update_lesson(id: int, **args):
     lesson_query = select(l for l in Lesson if (
         l.instructor.ID == new_instructor.ID))
     for l in lesson_query:
-        if l.day == new_day:  # por algum motivo a comparação de datas não está acusando igualdade
+        if l.day == new_day and l.ID != id:  # a segunda condição existe porque não faz sentido gerar conflito com a própria aula que se quer mudar
             l_s = l.expected_start  # expected start for the current lesson of the loop
             l_f = l.expected_finish  # expected finish for the lesson of the current loop
             if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
@@ -136,7 +138,8 @@ def update_lesson(id: int, **args):
     # verificando a disponibilidade do aluno
     student = Student[Lesson[id].student.ID]
     for lesson in student.lessons:
-        if lesson.day == new_day:
+        # a segunda condição existe porque não faz sentido gerar conflito com a própria aula que se quer mudar
+        if lesson.day == new_day and lesson.ID != id:
             l_s = lesson.expected_start
             l_f = lesson.expected_finish
             if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
@@ -145,6 +148,19 @@ def update_lesson(id: int, **args):
     # agora é necessário adicionar o objeto instructor ao dicionário args, que será utilizado pelo método set
     if update_instructor:
         args['instructor'] = new_instructor
+
+    # Um método PUT é utilizado inclusive para avaliar uma aula
+    # A avaliação inclui inserir uma nota e um comentário (opcional)
+    # Se o put tiver como argumentos status = 4, é necessário recontar as horas de voo do aluno
+    if ('status' in args.keys()) and ('grade' in args.keys()) and ('actual_duration' in args.keys()):
+        if args['status'] == 4 and lesson.status != 4:
+            # a segunda condição impede que, ao se avaliar a mesma aula 2 vezes, some-se 2 vezes a duração
+            duration = datetime.strptime(
+                args['actual_duration'], '%H:%M:%S').time()
+            additionalTime = timedelta(
+                hours=duration.hour, minutes=duration.minute, seconds=duration.second)
+            update_flightTime(id=student.ID, timeToAdd=additionalTime)
+
     lesson.set(**args)
     commit()
     return {"endpoint": "/api/lessons/" + str(id)}

@@ -4,7 +4,7 @@ from core.models import Student
 from flask import jsonify, abort
 from pony.orm import *
 from pony.orm.serialization import to_dict
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from core.schemas import StudentSchema
 
@@ -33,7 +33,10 @@ def get_student(id: int):
 
 @db_session
 def insert_new_student(name: str, address: str, birth_date: date):
-    stud = Student(name=name, address=address, birth_date=birth_date)
+    flightTimeZero = timedelta(days=0, seconds=0, microseconds=0,
+                               milliseconds=0, minutes=0, hours=0, weeks=0)
+    stud = Student(name=name, address=address,
+                   birth_date=birth_date, flightTime=flightTimeZero)
     commit()
 
     return {"endpoint": "api/students/" + str(stud.ID)}
@@ -67,3 +70,10 @@ def update_student(id, **args):
     stud.set(**args)
     commit()
     return {"endpoint": "/api/students/" + str(stud.ID)}
+
+
+@db_session
+def update_flightTime(id: int, timeToAdd: timedelta):
+    stud = Student[id]
+    stud.flightTime += timeToAdd
+    commit()
