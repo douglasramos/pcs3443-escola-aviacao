@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from flask_restplus import Resource, fields
 from api.api import api
-from application.instructor.use_cases import insert_new_instructor, delete_instructor, get_instructors_list, update_instructor, get_instructor
+from application.instructor.use_cases import insert_new_instructor, delete_instructor, get_instructors_list, update_instructor, get_instructor, get_lesson_list
 from datetime import datetime, date
 from core.models import Instructor
 
@@ -67,5 +67,18 @@ class instructorByID(Resource):
         json_data = request.get_json(force=True)
 
         response = jsonify(update_instructor(id, **json_data))
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
+
+
+@ns.route('/<int:id>/lessons')
+@api.response(404, 'Request Invalid.')
+@api.response(200, 'Success')
+class instructorLessonList(Resource):
+
+    def get(self, id):
+        """Returns an instructor's lesson list"""
+
+        response = jsonify(get_lesson_list(id))
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response

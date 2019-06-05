@@ -36,12 +36,15 @@ def initialize_app(app):
     app.register_blueprint(blueprint_api)
 
     initialize_database()
+    # remove todas as tabelas do banco de dados, independetemente de estarem vazias ou não
+    # delete_database()
     populate_database()  # preenche as tabelas Student e Instructor caso estejam vazias
-    # delete_database() # remove todas as tabelas do banco de dados, independetemente de estarem vazias ou não
+
 
 def main():
     initialize_app(app)
     app.run(debug=FLASK_DEBUG)
+
 
 if __name__ == "__main__":
     main()

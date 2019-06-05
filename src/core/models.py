@@ -14,6 +14,7 @@ class Student(db.Entity):
     address = Required(str)
     birth_date = Required(date)
     lessons = Set('Lesson')
+    flightTime = Optional(timedelta)
 
 
 class Instructor(db.Entity):
@@ -28,7 +29,8 @@ class Instructor(db.Entity):
     address = Required(str)
     birth_date = Required(date)
     course_name = Required(str)
-    graduation_date = Required(date)  # data de obtenção do diploma. Depois temos que ver como faz para se usar date ao invés de string
+    # data de obtenção do diploma. Depois temos que ver como faz para se usar date ao invés de string
+    graduation_date = Required(date)
     institution = Required(str)
     lessons = Set('Lesson')
 
@@ -44,6 +46,9 @@ class Lesson(db.Entity):
     expected_start = Required(time)
     expected_finish = Required(time)
     actual_duration = Optional(time)
-    status = Required(int)  # 1 (a fazer), 2 (ocorrendo), 3 (feita),  4 (avaliada)
+    # 1 (a fazer), 2 (ocorrendo), 3 (feita),  4 (avaliada)
+    status = Required(int)
     student = Required(Student)
     instructor = Required(Instructor)
+    grade = Optional(int)
+    comment = Optional(str)

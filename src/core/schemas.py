@@ -7,6 +7,7 @@ class StudentSchema(Schema):
     address = fields.Str()
     birth_date = fields.Date()
     lessons = fields.Nested('LessonSchema', many=True, exclude=('student',))
+    flightTime = fields.TimeDelta()
 
     ordered = True
 
@@ -15,6 +16,7 @@ class StudentSchema(Schema):
     def wrap(self, data, many):
 
         return data
+
 
 class InstructorSchema(Schema):
     ID = fields.Int()
@@ -35,15 +37,18 @@ class InstructorSchema(Schema):
 
         return (data)
 
+
 class LessonSchema(Schema):
     ID = fields.Int()
     day = fields.Date()
-    expected_start = fields.Time(format = "%H:%M:%S")
-    expected_finish = fields.Time(format = "%H:%M:%S")
-    actual_duration = fields.Time(format = "%H:%M:$S")
+    expected_start = fields.Time(format="%H:%M:%S")
+    expected_finish = fields.Time(format="%H:%M:%S")
+    actual_duration = fields.Time(format="%H:%M:$S")
     status = fields.Int()
-    student = fields.Nested(StudentSchema, exclude = ('lessons',))
-    instructor = fields.Nested(InstructorSchema, exclude = ('lessons',))
+    student = fields.Nested(StudentSchema, exclude=('lessons',))
+    instructor = fields.Nested(InstructorSchema, exclude=('lessons',))
+    grade = fields.Int()
+    comment = fields.Str()
 
     ordered = True
 

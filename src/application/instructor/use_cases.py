@@ -1,11 +1,12 @@
 from persistance.persistance import db
-from core.models import Instructor
+from core.models import Instructor, Lesson
 
 from pony.orm import *
 from pony.orm.serialization import to_dict
-from datetime import datetime, date
+from datetime import datetime, date, time
 
 from core.schemas import InstructorSchema
+from core.schemas import LessonSchema
 from flask import abort
 
 
@@ -70,3 +71,21 @@ def update_instructor(id: int, **args):
     instr.set(**args)
     commit()
     return {"endpoint": "/api/instructors/" + str(instr.ID)}
+
+
+@db_session
+def get_lesson_list(id: int):
+    lessons = []
+    lesson_query = Lesson.select()
+    try:  # verifica-se, inicialmente se o instrutor consta no BD
+        instr = Instructor[id]
+    except ObjectNotFound:
+        abort(404)
+
+    for l in lesson_query:
+        if l.instructor.ID == id:
+            e_s = l.expected_start.strftime('%H:%M:%S')
+            e_f = l.expected_finish.strftime('%H:%M:%S')
+            lessons.append(l)
+    schema = LessonSchema(many=True)
+    return schema.dump(list(lessons)).data

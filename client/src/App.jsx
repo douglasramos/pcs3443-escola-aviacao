@@ -7,7 +7,6 @@ import DashboardInstructor from './components/DashboardIntructor';
 import DashboardAdministrator from './components/DashboardAdministrator';
 import DashboardStudent from './components/DashboardStudent';
 import HomeApp from './components/HomeApp';
-import ScheduleLesson from './components/ScheduleLesson';
 
 function App() {
   return (
@@ -20,7 +19,6 @@ function App() {
           <Route path="/dashboard-instructor" component={DashboardInstructor} />
           <Route path="/dashboard-administrator" component={DashboardAdministrator} />
           <Route path="/dashboard-student" component={DashboardStudent} />
-          <Route path="/schedule-lesson" component={ScheduleLesson} />
         </div>
       </Router>
     </React.Fragment>
