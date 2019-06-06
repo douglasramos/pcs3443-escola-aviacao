@@ -19,8 +19,8 @@ class ScheduleLesson extends Component {
     this.state = {
       idField: '',
       idFieldIsFilled: false,
-      date: '',
-      dateIsFilled: false,
+      date: new Date().toISOString().split('T')[0],
+      dateIsFilled: true,
       startTime: '',
       startTimeIsFilled: false,
       endTime: '',
@@ -106,8 +106,8 @@ class ScheduleLesson extends Component {
     this.setState({
       idField: '',
       idFieldIsFilled: false,
-      date: '',
-      dateIsFilled: false,
+      date: new Date().toISOString().split('T')[0],
+      dateIsFilled: true,
       startTime: '',
       startTimeIsFilled: false,
       endTime: '',

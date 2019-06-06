@@ -5,8 +5,8 @@ from pony.orm import *
 from pony.orm.serialization import to_dict
 from datetime import datetime, date, time
 
-from core.schemas import InstructorSchema
-from core.schemas import LessonSchema
+from core.schemas import InstructorSchema, LessonSchema
+
 from flask import abort
 
 

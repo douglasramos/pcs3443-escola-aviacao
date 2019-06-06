@@ -7,10 +7,16 @@ import React from 'react';
 // import MenuIcon from '@material-ui/icons/Menu';
 import './NavBar.css';
 import ScheduleLesson from './ScheduleLesson';
+import ListEditLessons from './ListEditLessons';
 // import { Link } from 'react-router-dom';
 
 function DashboardStudent() {
-  return <ScheduleLesson />;
+  return (
+    <div>
+      <ListEditLessons />
+      <ScheduleLesson />
+    </div>
+  );
 }
 
 export default DashboardStudent;
