@@ -1,12 +1,12 @@
 from persistance.persistance import db
-from core.models import Student
+from core.models import Student, Lesson
 
 from flask import jsonify, abort
 from pony.orm import *
 from pony.orm.serialization import to_dict
 from datetime import datetime, date, timedelta
 
-from core.schemas import StudentSchema
+from core.schemas import StudentSchema, LessonSchema
 
 
 @db_session
@@ -77,3 +77,21 @@ def update_flightTime(id: int, timeToAdd: timedelta):
     stud = Student[id]
     stud.flightTime += timeToAdd
     commit()
+
+
+@db_session
+def get_lesson_list(id: int):
+    lessons = []
+    lesson_query = Lesson.select()
+    try:  # verifica-se, inicialmente se o instrutor consta no BD
+        stud = Student[id]
+    except ObjectNotFound:
+        abort(404)
+
+    for l in lesson_query:
+        if l.student.ID == id:
+            e_s = l.expected_start.strftime('%H:%M:%S')
+            e_f = l.expected_finish.strftime('%H:%M:%S')
+            lessons.append(l)
+    schema = LessonSchema(many=True)
+    return schema.dump(list(lessons)).data
