@@ -27,8 +27,10 @@ class student(Resource):
         address = json_data['address']
         birth_date = datetime.strptime(
             json_data['birth_date'], "%Y-%m-%d").date()
+        courseDuration = json_data['courseDuration']
 
-        response = jsonify(insert_new_student(name, address, birth_date))
+        response = jsonify(insert_new_student(
+            name, address, birth_date, courseDuration))
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 

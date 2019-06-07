@@ -15,6 +15,8 @@ class Student(db.Entity):
     birth_date = Required(date)
     lessons = Set('Lesson')
     flightTime = Optional(timedelta)
+    licenseAvailable = Required(bool)
+    courseDuration = Required(int)  # duração. em horas, do curso pretendido
 
 
 class Instructor(db.Entity):
