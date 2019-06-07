@@ -38,6 +38,7 @@ class ListEditLessons extends Component {
       completeLessonList: [],
       incompleteLessonList: [],
       flightTime: '',
+      courseDuration: '',
       lessonsAreListed: '',
       displayNotFound: false,
       displayDetailMenu: false,
@@ -121,7 +122,10 @@ class ListEditLessons extends Component {
       }).then(response => {
         console.log('Dados do aluno: \r\n');
         console.log(response.data);
-        this.setState({ flightTime: response.data.flightTime });
+        this.setState({
+          flightTime: response.data.flightTime,
+          courseDuration: response.data.courseDuration,
+        });
       });
     }
   };
@@ -269,7 +273,7 @@ class ListEditLessons extends Component {
 
   closeAlert = () => {
     this.setState({ displayAlert: false });
-  }
+  };
 
   render() {
     let completeLessonsTable;
@@ -421,16 +425,18 @@ class ListEditLessons extends Component {
     }
 
     let flightProgressBar;
-    const flightHours = Math.floor(this.state.flightTime / 3600); //divisão inteira
+    const flightHours = Math.floor(this.state.flightTime / 3600); // divisão inteira
     const flightMinutes = (this.state.flightTime % 3600) / 60;
-    const threshold = 10 * 3600; // 10 horas de voo no total
+    const threshold = this.state.courseDuration * 3600; // 1courseDuration está em horas
 
     let tooltipMessage;
 
     if (this.state.flightTime <= threshold) {
       // o valor de flightTime é em segundos
       flightProgressBar = 100 * (this.state.flightTime / threshold);
-      tooltipMessage = `Tempo de voo acumulado: ${flightHours}h${flightMinutes}min (${flightProgressBar}%)`;
+      tooltipMessage = `Tempo de voo acumulado: ${flightHours}h${flightMinutes}min (${flightProgressBar}% de um total de ${
+        this.state.courseDuration
+      }h)`;
     } else {
       flightProgressBar = 100;
       tooltipMessage = `Tempo de voo acumulado: ${flightHours}h${flightMinutes}min (${flightProgressBar}% +)`;

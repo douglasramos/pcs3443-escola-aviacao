@@ -81,7 +81,7 @@ class EditInstructor extends Component {
         )
         .catch(error => {
           if (error.response.status === 404) {
-            this.setState({ displayNotFound: true });
+            this.setState({ displayNotFound: true, idGet: false, edit: false });
           }
         });
       this.setState({ edit_nameIsFilled: true });

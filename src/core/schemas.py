@@ -8,6 +8,8 @@ class StudentSchema(Schema):
     birth_date = fields.Date()
     lessons = fields.Nested('LessonSchema', many=True, exclude=('student',))
     flightTime = fields.TimeDelta()
+    licenseAvailable = fields.Bool()
+    courseDuration = fields.Int()
 
     ordered = True
 

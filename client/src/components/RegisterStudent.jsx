@@ -9,6 +9,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import MenuItem from '@material-ui/core/MenuItem';
 
 class RegisterStudent extends Component {
   constructor() {
@@ -18,9 +19,11 @@ class RegisterStudent extends Component {
       name: '',
       birthDate: '',
       address: '',
+      course: '',
       nameIsFilled: false,
       birthDateIsFilled: false,
       addressIsFilled: false,
+      courseIsFilled: '',
       dialogOpen: false,
       wasSubmitted: false,
       responseID: '',
@@ -30,12 +33,18 @@ class RegisterStudent extends Component {
   submitNew = () => {
     const url = 'http://localhost:8888/api/students/';
     this.setState({ wasSubmitted: true });
-    if (this.state.nameIsFilled && this.state.birthDateIsFilled && this.state.addressIsFilled) {
+    if (
+      this.state.nameIsFilled &&
+      this.state.birthDateIsFilled &&
+      this.state.addressIsFilled &&
+      this.state.courseIsFilled
+    ) {
       axios
         .post(url, {
           name: this.state.name,
           birth_date: this.state.birthDate,
           address: this.state.address,
+          courseDuration: this.state.course,
         })
         .then(response => {
           const responseString = response.data.endpoint;
@@ -50,9 +59,11 @@ class RegisterStudent extends Component {
       name: '',
       birthDate: '',
       address: '',
+      course: '',
       nameIsFilled: false,
       birthDateIsFilled: false,
       addressIsFilled: false,
+      courseIsFilled: false,
       wasSubmitted: false,
       responseID: '',
     });
@@ -153,6 +164,32 @@ class RegisterStudent extends Component {
               value={this.state.birthDate}
               onChange={this.handleChange}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              id="TextField_course"
+              select
+              label="Curso"
+              name="course"
+              value={this.state.course}
+              onChange={this.handleChange}
+              fullWidth
+              error={this.state.wasSubmitted && !this.state.courseIsFilled}
+              variant="outlined"
+            >
+              <MenuItem key="Curso_10h" value={10}>
+                Habilitação básica de pilotagem (10h)
+              </MenuItem>
+              <MenuItem key="Curso_20h" value={20}>
+                Pilotagem comercial (20h)
+              </MenuItem>
+              <MenuItem key="Curso_30h" value={30}>
+                Pilotagem de aviões de grande porte (30h)
+              </MenuItem>
+              <MenuItem key="Curso_50h" value={50}>
+                Habilitação para instrutores de voo (50h)
+              </MenuItem>
+            </TextField>
           </Grid>
         </Grid>
         <div className="mt-3 text-right">

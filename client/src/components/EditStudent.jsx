@@ -25,6 +25,8 @@ class EditStudent extends Component {
       name: '',
       birthDate: '',
       address: '',
+      flightTime: '',
+      courseDuration: '',
       edit_name: '', // edit_ salvam valores a serem colocados no banco de dados sem compremeter os valores sendo consultados no momento
       edit_nameIsFilled: false,
       edit_birthDate: '',
@@ -36,6 +38,7 @@ class EditStudent extends Component {
       displayDeleteSuccess: false,
       displayNotFound: false,
       displayUpdateSuccess: false,
+      licenseAvailable: false,
     };
   }
 
@@ -46,7 +49,8 @@ class EditStudent extends Component {
     if (this.state.idFieldIsFilled) {
       axios
         .get(url)
-        .then(response =>
+        .then(response => {
+          console.log(response.data);
           this.setState(
             {
               idDisplay: idToDisplay, // salva o ID que se quer modificar para que dependa do input atual
@@ -56,13 +60,16 @@ class EditStudent extends Component {
               edit_birthDate: response.data.birth_date,
               address: response.data.address,
               edit_address: response.data.address,
+              courseDuration: response.data.courseDuration,
+              flightTime: response.data.flightTime,
+              licenseAvailable: response.data.licenseAvailable,
             },
             () => this.setState({ idGet: true })
-          )
-        )
+          );
+        })
         .catch(error => {
           if (error.response.status === 404) {
-            this.setState({ displayNotFound: true });
+            this.setState({ displayNotFound: true, idGet: false, edit: false });
           }
         });
       this.setState({ edit_nameIsFilled: true });
@@ -165,7 +172,55 @@ class EditStudent extends Component {
     this.setState({ displayNotFound: false });
   };
 
+  generateLicense = () => {
+    // emissão do brevê
+    console.log('Brevê emitido');
+  };
+
   render() {
+    let progress;
+
+    if (this.state.idGet) {
+      if (!this.state.licenseAvailable) {
+        progress = (
+          <Grid container spacing={16}>
+            <Grid item>
+              Tempo de voo acumulado: {Math.floor(this.state.flightTime / 3600)}h
+              {`00${(this.state.flightTime % 3600) / 60}`.slice(-2)}min Duração do curso:{' '}
+              {this.state.courseDuration}h00min
+            </Grid>
+          </Grid>
+        );
+      } else {
+        progress = (
+          <Grid container justify="space-between">
+            <Grid item style={{ position: 'relative', top: '10px' }}>
+              Tempo de voo acumulado: {Math.floor(this.state.flightTime / 3600)}h
+              {`00${(this.state.flightTime % 3600) / 60}`.slice(-2)}min Duração do curso:{' '}
+              {this.state.courseDuration}h00min
+            </Grid>
+            <Grid item style={{ position: 'relative', top: '-10px' }}>
+              <Button
+                className="m1-3"
+                variant="contained"
+                onClick={this.generateLicense}
+                style={{
+                  backgroundColor: '#F50057',
+                  color: 'white',
+                  position: 'relative',
+                  top: '15px',
+                }}
+              >
+                Emitir brevê
+              </Button>
+            </Grid>
+          </Grid>
+        );
+      }
+    } else {
+      progress = '';
+    }
+
     return (
       <div>
         <Typography component="h4" variant="h4" gutterBottom>
@@ -314,6 +369,7 @@ class EditStudent extends Component {
             error={!this.state.edit_birthDateIsFilled && this.state.edit}
           />
         )}
+        {progress}
         <div className="mt-3 text-right">
           {this.state.idGet && this.state.edit ? (
             <Button variant="outlined" color="primary" onClick={this.disableEdit}>

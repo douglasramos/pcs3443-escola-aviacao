@@ -32,11 +32,12 @@ def get_student(id: int):
 
 
 @db_session
-def insert_new_student(name: str, address: str, birth_date: date):
+def insert_new_student(name: str, address: str, birth_date: date, courseDuration: int):
     flightTimeZero = timedelta(days=0, seconds=0, microseconds=0,
                                milliseconds=0, minutes=0, hours=0, weeks=0)
     stud = Student(name=name, address=address,
-                   birth_date=birth_date, flightTime=flightTimeZero)
+                   birth_date=birth_date, flightTime=flightTimeZero,
+                   licenseAvailable=False, courseDuration=courseDuration)
     commit()
 
     return {"endpoint": "api/students/" + str(stud.ID)}
@@ -76,6 +77,10 @@ def update_student(id, **args):
 def update_flightTime(id: int, timeToAdd: timedelta):
     stud = Student[id]
     stud.flightTime += timeToAdd
+
+    # flightTime está em segundo e courseDuration em horas
+    if(stud.flightTime >= timedelta(seconds=3600*stud.courseDuration)):
+        stud.set(licenseAvailable=True)
     commit()
 
 

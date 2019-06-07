@@ -38,7 +38,7 @@ def initialize_app(app):
     initialize_database()
     # remove todas as tabelas do banco de dados, independetemente de estarem vazias ou não
     # delete_database()
-    populate_database()  # preenche as tabelas Student e Instructor caso estejam vazias
+    # populate_database()  # preenche as tabelas Student e Instructor caso estejam vazias
 
 
 def main():
