@@ -281,24 +281,23 @@ class ScheduleLesson extends Component {
           </Grid>
           <Grid container spacing={16} justify="space-between">
             <Grid item>
-              <form autoComplete="off">
-                <FormControl className="FormControl">
-                  <InputLabel>Instrutor</InputLabel>
-                  <Select
-                    value={this.state.selectedInstructor}
-                    onChange={this.handleChange}
-                    inputProps={{ name: 'selectedInstructor' }}
-                    style={{ width: '400px' }}
-                    error={this.state.wasSubmitted && !this.state.selectedInstructorIsFilled}
-                  >
-                    {this.state.instructorList.map((instructor, index) => (
-                      <MenuItem key={index} value={parseInt(instructor.split('-', 1), 10)}>
-                        {instructor}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </form>
+              <TextField
+                id="TextField_selectedInstructor"
+                select
+                label="Instrutor"
+                name="selectedInstructor"
+                value={this.state.selectedInstructor}
+                onChange={this.handleChange}
+                style={{ width: '300px' }}
+                error={this.state.wasSubmitted && !this.state.selectedInstructorIsFilled}
+                variant="outlined"
+              >
+                {this.state.instructorList.map((instructor, index) => (
+                  <MenuItem key={index} value={parseInt(instructor.split('-', 1), 10)}>
+                    {instructor}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Grid>
             <Grid item>
               <Button onClick={this.displayState} />

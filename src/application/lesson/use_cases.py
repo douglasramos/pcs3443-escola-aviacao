@@ -1,3 +1,6 @@
+# for debugging purposes
+from __future__ import print_function
+import sys
 from persistance.persistance import db
 from core.models import Lesson, Instructor, Student
 
@@ -93,6 +96,22 @@ def update_lesson(id: int, **args):
     except ObjectNotFound:
         abort(404)
 
+    # Um método PUT é utilizado inclusive para avaliar uma aula
+    # A avaliação inclui inserir uma nota e um comentário (opcional)
+    # Se o put tiver como argumentos status = 4, é necessário recontar as horas de voo do aluno
+    if ('status' in args.keys()) and ('grade' in args.keys()) and ('actual_duration' in args.keys()):
+        if args['status'] == 4 and lesson.status != 4:
+            # a segunda condição impede que, ao se avaliar a mesma aula 2 vezes, some-se 2 vezes a duração
+            duration = datetime.strptime(
+                args['actual_duration'], '%H:%M:%S').time()
+            additionalTime = timedelta(
+                hours=duration.hour, minutes=duration.minute, seconds=duration.second)
+            update_flightTime(id=lesson.student.ID, timeToAdd=additionalTime)
+            lesson.set(**args)
+            commit()
+            return {"endpoint": "/api/lessons/" + str(id)}
+
+    # se a alteração não for uma alteração de aula, será uma remarcação
     # primeiro verifico se é necesário alterar o instrutor
     if 'instructor_id' in args.keys():
         update_instructor = True
@@ -105,61 +124,58 @@ def update_lesson(id: int, **args):
 
     # semelhante ao que acontece no create, é necessário verificar a disponibilidade do aluno/professor
     # para tal, preciso saber se a data e os horários da aula mudarão ou não nesse update
+    print(str(args.keys()), file=sys.stderr)
     if 'day' in args.keys():
         new_day = datetime.strptime(args['day'], '%Y-%m-%d').date()
     else:
         new_day = lesson.day
 
-    if 'start' in args.keys():
+    print("new_day: " + str(new_day), file=sys.stderr)
+
+    if 'expected_start' in args.keys():
         # para adotar a mesma notação do POST
-        nl_s = datetime.strptime(args['start'], '%H:%M:%S').time()
+        nl_s = datetime.strptime(args['expected_start'], '%H:%M:%S').time()
     else:
         nl_s = lesson.expected_start
 
-    if 'finish' in args.keys():
+    print("nl_s: " + str(nl_s), file=sys.stderr)
+
+    if 'expected_finish' in args.keys():
         # para adotar a mesma notação do POST
-        nl_f = datetime.strptime(args['finish'], '%H:%M:%S').time()
+        nl_f = datetime.strptime(args['expected_finish'], '%H:%M:%S').time()
     else:
         nl_f = lesson.expected_finish
+
     # não faz sentido querer atualizar o aluno porque ele quem faz a requisição de update
     # semelhante ao que ocorre no create, preciso verificar a disponibilidade do instrutor e do aluno
 
     # verificando a disponibilidade do instrutor
     # query com todas as aulas de dado instrutor
-    lesson_query = select(l for l in Lesson if (
-        l.instructor.ID == new_instructor.ID))
-    for l in lesson_query:
-        if l.day == new_day and l.ID != id:  # a segunda condição existe porque não faz sentido gerar conflito com a própria aula que se quer mudar
-            l_s = l.expected_start  # expected start for the current lesson of the loop
-            l_f = l.expected_finish  # expected finish for the lesson of the current loop
+    instructor_lesson_query = select(l for l in Lesson if (
+        l.instructor.ID == new_instructor.ID and l.day == new_day))
+    for i_l_q in instructor_lesson_query:
+        if i_l_q != id:  # a segunda condição existe porque não faz sentido gerar conflito com a própria aula que se quer mudar
+            l_s = i_l_q.expected_start  # expected start for the current lesson of the loop
+            l_f = i_l_q.expected_finish  # expected finish for the lesson of the current loop
             if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
-                return 'O instrutor selecionado não está disponível'
+                abort(409, 'Conflito instrutor')
 
     # verificando a disponibilidade do aluno
-    student = Student[Lesson[id].student.ID]
-    for lesson in student.lessons:
-        # a segunda condição existe porque não faz sentido gerar conflito com a própria aula que se quer mudar
-        if lesson.day == new_day and lesson.ID != id:
-            l_s = lesson.expected_start
-            l_f = lesson.expected_finish
+    student_id = lesson.student.ID
+    student_lesson_query = select(l for l in Lesson if (
+        l.student.ID == student_id and l.day == new_day))
+    for s_l_q in student_lesson_query:
+        if (s_l_q.ID != id):
+            l_s = s_l_q.expected_start
+            l_f = s_l_q.expected_finish
             if (((l_s <= nl_f) and (nl_f <= l_f)) or ((l_s <= nl_s) and (nl_s <= l_f)) or ((nl_s < l_s) and (l_f < nl_f))):
-                return 'O agendamento dessa aula gera conflito na grade horária'
+                print(('Conflito aluno com a aula ' + str(s_l_q.ID) + '\n\r' + 'l_s:' + str(l_s)) +
+                      '\n\r' + 'l_f:' + str(l_f) + '\n\r' + 'nl_s:' + str(nl_s) + '\n\r' + 'nl_f:' + str(nl_f), file=sys.stderr)
+                abort(409, 'Conflito aluno')
 
     # agora é necessário adicionar o objeto instructor ao dicionário args, que será utilizado pelo método set
     if update_instructor:
         args['instructor'] = new_instructor
-
-    # Um método PUT é utilizado inclusive para avaliar uma aula
-    # A avaliação inclui inserir uma nota e um comentário (opcional)
-    # Se o put tiver como argumentos status = 4, é necessário recontar as horas de voo do aluno
-    if ('status' in args.keys()) and ('grade' in args.keys()) and ('actual_duration' in args.keys()):
-        if args['status'] == 4 and lesson.status != 4:
-            # a segunda condição impede que, ao se avaliar a mesma aula 2 vezes, some-se 2 vezes a duração
-            duration = datetime.strptime(
-                args['actual_duration'], '%H:%M:%S').time()
-            additionalTime = timedelta(
-                hours=duration.hour, minutes=duration.minute, seconds=duration.second)
-            update_flightTime(id=student.ID, timeToAdd=additionalTime)
 
     lesson.set(**args)
     commit()
@@ -174,9 +190,10 @@ def get_available_instructors(day: date, start: time, finish: time):
     for instructor in instructor_query:
         available = True
         for lesson in instructor.lessons:
+            l_day = lesson.day
             l_s = lesson.expected_start
             l_f = lesson.expected_finish
-            if (((l_s <= finish) and (finish <= l_f)) or ((l_s <= start) and (start <= l_f)) or ((start < l_s) and (l_f < finish))):
+            if (l_day == day) and (((l_s <= finish) and (finish <= l_f)) or ((l_s <= start) and (start <= l_f)) or ((start < l_s) and (l_f < finish))):
                 available = False
                 break
         if available:

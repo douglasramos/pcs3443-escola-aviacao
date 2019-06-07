@@ -2,25 +2,27 @@ import React, { Component } from 'react';
 
 import axios from 'axios';
 
-import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import { OutlinedInput, Select } from '@material-ui/core';
+import {
+  TextField,
+  Typography,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid,
+  Button,
+  IconButton,
+  MenuItem,
+  LinearProgress,
+  Tooltip,
+  withStyles,
+} from '@material-ui/core/';
 
 // ícones
 import Help from '@material-ui/icons/Help';
@@ -33,9 +35,9 @@ class ListEditLessons extends Component {
       IDField: '',
       IDFieldIsFilled: '',
       ID: '',
-      lessonList: [],
-      completedLessonList: [],
-      incompletedLessonList: [],
+      completeLessonList: [],
+      incompleteLessonList: [],
+      flightTime: '',
       lessonsAreListed: '',
       displayNotFound: false,
       displayDetailMenu: false,
@@ -43,10 +45,8 @@ class ListEditLessons extends Component {
       detailMenuExpectedStart: '',
       detailMenuExpectedFinish: '',
       detailMenuActualDuration: '',
-      detailMenuStatus: '',
       detailMenuInstructorName: '',
       detailMenuComment: '',
-      displayEditMenu: '',
       editMenuIsOpen: false,
       editMenuID: '',
       editMenuDate: new Date().toISOString().split('T')[0],
@@ -59,11 +59,9 @@ class ListEditLessons extends Component {
       editMenuInstructorIsFilled: false,
       editSubmitted: false,
       editMenuInstructorList: [],
-      instructorsAreListed: false,
-      editMenuSelectedInstructor: '',
-      editMenuSelectedInstructorIsFilled: false,
-      displayUpdateSucces: false,
-      updateWasSubmitted: false,
+      displayUpdateSuccess: false,
+      displayConflict: false,
+      displayAlert: true,
     };
   }
 
@@ -89,21 +87,27 @@ class ListEditLessons extends Component {
 
   getLessonList = () => {
     if (this.state.IDFieldIsFilled) {
-      this.setState({ completedLessonList: [] }, this.setState({ incompletedLessonList: [] }));
+      this.setState({ completeLessonList: [] }, this.setState({ incompleteLessonList: [] }));
       axios({
         method: 'get',
         url: `http://localhost:8888/api/students/${this.state.IDField}/lessons`,
       })
         .then(response => {
           console.log(`Lists being split. Length:${response.data.length}`);
+          const complete = [];
+          const incomplete = [];
           for (let i = 0; i < response.data.length; i += 1) {
             if (response.data[i].status === 4) {
-              this.state.completedLessonList.push(response.data[i]);
+              complete.push(response.data[i]);
             } else {
-              this.state.incompletedLessonList.push(response.data[i]);
+              incomplete.push(response.data[i]);
             }
           }
-          this.setState({ lessonsAreListed: true }, this.setState({ ID: this.state.IDField }));
+          this.setState({ completeLessonList: complete }, () =>
+            this.setState({ incompleteLessonList: incomplete }, () =>
+              this.setState({ lessonsAreListed: true }, this.setState({ ID: this.state.IDField }))
+            )
+          );
         })
         .catch(error => {
           console.log('Aluno não encontrado');
@@ -111,6 +115,14 @@ class ListEditLessons extends Component {
             this.setState({ displayNotFound: true }, this.setState({ lessonsAreListed: false }));
           }
         });
+      axios({
+        method: 'get',
+        url: `http://localhost:8888/api/students/${this.state.IDField}`,
+      }).then(response => {
+        console.log('Dados do aluno: \r\n');
+        console.log(response.data);
+        this.setState({ flightTime: response.data.flightTime });
+      });
     }
   };
 
@@ -123,8 +135,19 @@ class ListEditLessons extends Component {
       method: 'get',
       url: `http://localhost:8888/api/students/${this.state.ID}/lessons`,
     }).then(response => {
-      console.log(response.data);
-      this.setState({ lessonList: response.data }, this.setState({ lessonsAreListed: true }));
+      console.log(`Lists being split. Length:${response.data.length}`);
+      const complete = [];
+      const incomplete = [];
+      for (let i = 0; i < response.data.length; i += 1) {
+        if (response.data[i].status === 4) {
+          complete.push(response.data[i]);
+        } else {
+          incomplete.push(response.data[i]);
+        }
+      }
+      this.setState({ completeLessonList: complete }, () =>
+        this.setState({ incompleteLessonList: incomplete })
+      );
     });
   };
 
@@ -143,51 +166,29 @@ class ListEditLessons extends Component {
     expectedStart,
     expectedFinish,
     actualDuration,
-    status,
     instructorName,
     grade,
     comment
   ) => {
-    this.setState(
-      { detailMenuLessonID: ID },
-      this.setState(
-        { detailMenuComment: comment },
-        this.setState(
-          { detailMenuDay: day },
-          this.setState(
-            { detailMenuExpectedStart: expectedStart },
-            this.setState(
-              { detailMenuExpectedFinish: expectedFinish },
-              this.setState(
-                { detailMenuActualDuration: actualDuration },
-                this.setState(
-                  { detailMenuStatus: status },
-                  this.setState(
-                    { detailMenuInstructorName: instructorName },
-                    this.setState(
-                      { detailMenuGrade: grade },
-                      this.setState({ displayDetailMenu: true })
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    );
+    this.setState({
+      detailMenuLessonID: ID,
+      detailMenuComment: comment,
+      detailMenuDay: day,
+      detailMenuExpectedStart: expectedStart,
+      detailMenuExpectedFinish: expectedFinish,
+      detailMenuActualDuration: actualDuration,
+      detailMenuInstructorName: instructorName,
+      detailMenuGrade: grade,
+      displayDetailMenu: true,
+    });
   };
 
   closeDetailMenu = () => {
     this.setState({ displayDetailMenu: false });
   };
 
-  stateOnConsole = () => {
-    console.log(this.state);
-  };
-
-  openEditMenu = lessonID => {
-    this.setState({ editMenuID: lessonID }, this.setState({ editMenuIsOpen: true }));
+  openEditMenu = (event, lessonID) => {
+    this.setState({ editMenuID: lessonID, editMenuIsOpen: true });
   };
 
   getAvailableInstructors = () => {
@@ -205,13 +206,11 @@ class ListEditLessons extends Component {
           start: String(`${this.state.editMenuStart}:00`),
           finish: String(`${this.state.editMenuFinish}:00`),
         },
-      }).then(response =>
-        this.setState({ editMenuInstructorList: response.data }, () =>
-          this.setState({ instructorsAreListed: true }, () => console.log(response.data))
-        )
-      );
+      }).then(response => {
+        this.setState({ editMenuInstructorList: response.data }, () => console.log(response.data));
+      });
     } else {
-      this.setState({ editMenuSelectedInstructorIsFilled: false }, () =>
+      this.setState({ editMenuInstructorIsFilled: false }, () =>
         this.setState({ editMenuInstructorList: [] })
       );
     }
@@ -224,30 +223,57 @@ class ListEditLessons extends Component {
       this.state.editMenuInstructorIsFilled &&
       this.state.editMenuStartIsFilled
     ) {
-      const url = `http://localhost:8888/api/lessons/${this.state.editMenuID}`;
+      const url = `http://localhost:8888/api/lessons/${String(this.state.editMenuID)}`;
       axios
         .put(url, {
           day: this.state.editMenuDate,
-          expected_start: this.state.editMenuStart,
-          expected_finish: this.state.editMenuFinish,
+          expected_start: `${this.state.editMenuStart}:00`,
+          expected_finish: `${this.state.editMenuFinish}:00`,
           instructor_id: this.state.editMenuInstructor,
         })
         .then(response => {
           console.log(response.data);
-          this.setState({ displayUpdateSuccess: true });
+          this.setState({ displayUpdateSuccess: true, editSubmitted: false });
+        })
+        .catch(error => {
+          if (error.response.status === 409) {
+            console.log('Conflito na grade do aluno');
+            this.setState({ displayConflict: true });
+          }
         });
     } else {
-      this.setState({ updateWasSubmitted: true });
+      this.setState({ editSubmitted: true });
     }
   };
 
-  closeUpdateSuccessDialog = () =>{
-    this.setState({ displayUpdateSucces: false });
+  closeUpdateSuccessDialog = () => {
+    this.setState(
+      {
+        displayUpdateSuccess: false,
+        editMenuIsOpen: false,
+        editMenuDate: new Date().toISOString().split('T')[0],
+        editMenuStart: '',
+        editMenuStartIsFilled: false,
+        editMenuFinish: '',
+        editMenuFinishIsFilled: false,
+        editMenuInstructor: '',
+        editMenuInstructorIsFilled: false,
+      },
+      () => this.updateLessonList()
+    );
+  };
+
+  closeConflictDialog = () => {
+    this.setState({ displayConflict: false });
+  };
+
+  closeAlert = () => {
+    this.setState({ displayAlert: false });
   }
 
   render() {
-    let completedLessonsTable;
-    completedLessonsTable = this.state.completedLessonList.map((lesson, index) => (
+    let completeLessonsTable;
+    completeLessonsTable = this.state.completeLessonList.map((lesson, index) => (
       <TableRow key={index}>
         <TableCell align="center">{lesson.ID}</TableCell>
         <TableCell align="center">{lesson.day}</TableCell>
@@ -264,7 +290,6 @@ class ListEditLessons extends Component {
                 lesson.expected_start,
                 lesson.expected_finish,
                 lesson.actual_duration,
-                lesson.status,
                 lesson.instructor.name,
                 lesson.grade,
                 lesson.comment
@@ -278,13 +303,14 @@ class ListEditLessons extends Component {
       </TableRow>
     ));
 
-    let incompletedLessonsTable;
-    incompletedLessonsTable = this.state.incompletedLessonList.map((lesson, index) => (
+    let incompleteLessonsTable;
+    incompleteLessonsTable = this.state.incompleteLessonList.map((lesson, index) => (
       <TableRow key={index}>
         <TableCell align="center">{lesson.ID}</TableCell>
         <TableCell align="center">{lesson.day}</TableCell>
         <TableCell align="center">{lesson.expected_start}</TableCell>
         <TableCell align="center">{lesson.expected_finish}</TableCell>
+        <TableCell align="center">{lesson.instructor.name}</TableCell>
         <TableCell align="center">
           <IconButton
             color="primary"
@@ -302,7 +328,7 @@ class ListEditLessons extends Component {
       editMenu = (
         <div>
           <Typography component="h6" variant="h6" gutterBottom>
-            Remarcar aula
+            Remarcar aula {this.state.editMenuID}
           </Typography>
           <Grid container spacing={16}>
             <Grid item>
@@ -394,11 +420,47 @@ class ListEditLessons extends Component {
       editMenu = '';
     }
 
+    let flightProgressBar;
+    const flightHours = Math.floor(this.state.flightTime / 3600); //divisão inteira
+    const flightMinutes = (this.state.flightTime % 3600) / 60;
+    const threshold = 10 * 3600; // 10 horas de voo no total
+
+    let tooltipMessage;
+
+    if (this.state.flightTime <= threshold) {
+      // o valor de flightTime é em segundos
+      flightProgressBar = 100 * (this.state.flightTime / threshold);
+      tooltipMessage = `Tempo de voo acumulado: ${flightHours}h${flightMinutes}min (${flightProgressBar}%)`;
+    } else {
+      flightProgressBar = 100;
+      tooltipMessage = `Tempo de voo acumulado: ${flightHours}h${flightMinutes}min (${flightProgressBar}% +)`;
+    }
+
+    const ColoredLinearProgress = withStyles({
+      root: {
+        height: 15,
+      },
+      bar: {
+        borderRadius: 20,
+        backgroundColor: '#2cad58',
+      },
+    })(LinearProgress);
+
     return (
       <div className="container mt-3">
-        <Typography component="h4" variant="h4" gutterBottom>
-          Consulta de aulas
-        </Typography>
+        <Dialog
+          open={this.state.displayConflict}
+          onClose={this.closeConflictDialog}
+          aria-labelledby="conflictDialogTitle"
+          aria-describedby="conflictDialogDescription"
+        >
+          <DialogTitle id="conflictDialogTitle">Erro</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="conflictDialogDescription">
+              A remarcação gera conflito na grade horária do aluno
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
         <Dialog
           open={this.state.displayUpdateSuccess}
           onClose={this.closeUpdateSuccessDialog}
@@ -449,6 +511,23 @@ class ListEditLessons extends Component {
             </Grid>
           </DialogContent>
         </Dialog>
+        <Dialog
+          open={this.state.displayAlert && flightProgressBar >= 100}
+          onClose={this.closeAlert}
+          aria-labelledby="alertDialogTitle"
+          aria-describedby="alertDialogDescription"
+        >
+          <DialogTitle id="alertDialogTitle">Parabéns</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alertDialogDescription">
+              Você completou as horas de voo necessárias para emissão do seu brevê. Contate o
+              administrador para obtê-lo
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+        <Typography component="h4" variant="h4" gutterBottom>
+          Consulta de aulas
+        </Typography>
         <Grid container spacing={16}>
           <Grid item style={{ position: 'relative', top: '-10px' }}>
             <TextField
@@ -478,21 +557,17 @@ class ListEditLessons extends Component {
               Listar aulas
             </Button>
           </Grid>
-          <Grid item>
-            <Button
-              className="m1-3"
-              onClick={this.stateOnConsole}
-              variant="contained"
-              stule={{ position: 'relative', top: '15px' }}
-            >
-              Estado no console
-            </Button>
-          </Grid>
         </Grid>
         {!this.state.lessonsAreListed ? (
           ' '
         ) : (
           <div>
+            <Typography component="h6" variant="h6" gutterBottom>
+              Progresso
+            </Typography>
+            <Tooltip title={tooltipMessage} placement="top">
+              <ColoredLinearProgress variant="determinate" value={flightProgressBar} />
+            </Tooltip>
             <Typography component="h6" variant="h6" gutterBottom>
               Aulas encerradas
             </Typography>
@@ -504,10 +579,11 @@ class ListEditLessons extends Component {
                     <TableCell align="center">Data</TableCell>
                     <TableCell align="center">Início previsto</TableCell>
                     <TableCell align="center">Término previsto</TableCell>
+
                     <TableCell align="center">Exibir detalhes</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>{completedLessonsTable}</TableBody>
+                <TableBody>{completeLessonsTable}</TableBody>
               </Table>
             </Paper>
           </div>
@@ -527,10 +603,11 @@ class ListEditLessons extends Component {
                     <TableCell align="center">Data</TableCell>
                     <TableCell align="center">Início previsto</TableCell>
                     <TableCell align="center">Término previsto</TableCell>
+                    <TableCell align="center">Instrutor</TableCell>
                     <TableCell align="center">Remarcar aula</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>{incompletedLessonsTable}</TableBody>
+                <TableBody>{incompleteLessonsTable}</TableBody>
               </Table>
             </Paper>
           </div>
