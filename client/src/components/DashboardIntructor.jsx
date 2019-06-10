@@ -1,16 +1,28 @@
-import React from 'react';
-// import AppBar from '@material-ui/core/AppBar';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import Typography from '@material-ui/core/Typography';
-// import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-// import MenuIcon from '@material-ui/icons/Menu';
+import React, { Component } from 'react';
 import './NavBar.css';
+import { Redirect } from 'react-router-dom';
 import EvaluateLesson from './EvaluateLesson';
-// import { Link } from 'react-router-dom';
 
-function DashboardInstructor() {
-  return <EvaluateLesson />;
+class DashboardInstructor extends Component {
+  constructor() {
+    super();
+    this.state = {
+      type: String(JSON.parse(localStorage.getItem('type'))),
+    };
+  }
+
+  render() {
+    let Page = '';
+    console.log(`Type: ${this.state.type}`);
+    if (this.state.type === 'instructor') {
+      console.log('Type == instructor');
+      Page = <EvaluateLesson />;
+    } else {
+      console.log('Type != instructor');
+      Page = <Redirect to="/unauthorized" />;
+    }
+    return Page;
+  }
 }
 
 export default DashboardInstructor;

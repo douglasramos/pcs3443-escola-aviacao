@@ -33,10 +33,10 @@ def get_instructor(id: int):
 
 
 @db_session
-def insert_new_instructor(name: str, license_number: int, address: str, birth_date: date,
+def insert_new_instructor(name: str, license_number: int, address: str, birth_date: date, email: str, password: str,
                           course_name: str, graduation_date: date, institution: str):
 
-    instr = Instructor(name=name, license_number=license_number, address=address,
+    instr = Instructor(name=name, license_number=license_number, address=address, email=email, password=password,
                        birth_date=birth_date, course_name=course_name, graduation_date=graduation_date,
                        institution=institution)
     commit()

@@ -16,6 +16,8 @@ class RegisterInstructor extends Component {
 
     this.state = {
       name: '',
+      email: '',
+      password: '',
       institution: '',
       graduationDate: '',
       licenseNumber: '',
@@ -24,6 +26,8 @@ class RegisterInstructor extends Component {
       address: '',
       dialogOpen: false,
       nameIsFilled: false,
+      emailIsFilled: false,
+      passwordIsFilled: false,
       institutionIsFilled: false,
       graduationDateIsFilled: false,
       licenseNumberIsFilled: false,
@@ -31,6 +35,7 @@ class RegisterInstructor extends Component {
       courseNameIsFilled: false,
       addressIsFilled: false,
       wasSubmitted: false,
+      error: false,
       responseID: '',
     };
   }
@@ -41,6 +46,8 @@ class RegisterInstructor extends Component {
     this.setState({ wasSubmitted: true });
     if (
       this.state.nameIsFilled &&
+      this.state.emailIsFilled &&
+      this.state.passwordIsFilled &&
       this.state.institutionIsFilled &&
       this.state.graduationDateIsFilled &&
       this.state.licenseNumberIsFilled &&
@@ -51,6 +58,8 @@ class RegisterInstructor extends Component {
       axios
         .post(url, {
           name: this.state.name,
+          email: this.state.email,
+          password: this.state.password,
           institution: this.state.institution,
           graduation_date: this.state.graduationDate,
           license_number: this.state.licenseNumber,
@@ -62,6 +71,10 @@ class RegisterInstructor extends Component {
           const responseString = response.data.endpoint;
           const ID = responseString.split('api/instructors/').pop();
           this.setState({ responseID: ID }, () => this.setState({ dialogOpen: true }));
+        })
+        .catch(error => {
+          console.log(error.response);
+          this.setState({ error: true });
         });
     }
   };
@@ -69,6 +82,8 @@ class RegisterInstructor extends Component {
   resetState = () => {
     this.setState({
       name: '',
+      email: '',
+      password: '',
       institution: '',
       graduationDate: '',
       licenseNumber: '',
@@ -77,6 +92,8 @@ class RegisterInstructor extends Component {
       address: '',
       dialogOpen: false,
       nameIsFilled: false,
+      emailIsFilled: false,
+      passwordIsFilled: false,
       institutionIsFilled: false,
       graduationDateIsFilled: false,
       licenseNumberIsFilled: false,
@@ -84,6 +101,7 @@ class RegisterInstructor extends Component {
       courseNameIsFilled: false,
       addressIsFilled: false,
       wasSubmitted: false,
+      error: false,
       responseID: '',
     });
   };
@@ -116,12 +134,13 @@ class RegisterInstructor extends Component {
     this.setState({ dialogOpen: false }, this.resetState());
   };
 
+  closeError = () => {
+    this.setState({ error: false });
+  };
+
   render() {
     return (
       <div>
-        <Typography component="h4" variant="h4" gutterBottom>
-          Cadastro de Instrutor
-        </Typography>
         <Dialog
           open={this.state.dialogOpen}
           onClose={this.handleDialogClose}
@@ -135,6 +154,22 @@ class RegisterInstructor extends Component {
             </DialogContentText>
           </DialogContent>
         </Dialog>
+        <Dialog
+          open={this.state.error}
+          onClose={this.closeError}
+          aria-labelledby="errorTitle"
+          aria-describedby="errorText"
+        >
+          <DialogTitle id="errorTitle">ERRO</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="errorText">
+              O email fornecido já está cadastrado
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+        <Typography component="h4" variant="h4" gutterBottom>
+          Cadastro de Instrutor
+        </Typography>
         <Grid container spacing={16}>
           <Grid item xs={12} sm={6} lg={4}>
             <TextField
@@ -182,18 +217,33 @@ class RegisterInstructor extends Component {
               onChange={this.handleChange}
             />
           </Grid>
-          <Grid item xs={12} sm={6} lg={3}>
+          <Grid item lg={4}>
             <TextField
-              id="TextField_license_number"
-              label="Número do brevê"
-              type="number"
-              name="licenseNumber"
+              id="TextField_email"
+              label="Email"
+              type="email"
+              name="email"
               required
               variant="outlined"
               margin="normal"
               fullWidth
-              error={!this.state.licenseNumberIsFilled && this.state.wasSubmitted}
-              value={this.state.licenseNumber}
+              error={!this.state.emailIsFilled && this.state.wasSubmitted}
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+          </Grid>
+          <Grid item lg={2}>
+            <TextField
+              id="TextField_password"
+              label="Senha"
+              type="password"
+              name="password"
+              required
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              error={!this.state.passwordIsFilled && this.state.wasSubmitted}
+              value={this.state.password}
               onChange={this.handleChange}
             />
           </Grid>
@@ -212,6 +262,7 @@ class RegisterInstructor extends Component {
               onChange={this.handleChange}
             />
           </Grid>
+
           <Grid item xs={12} sm={6} lg={3}>
             <TextField
               id="TextField_course_name"
@@ -224,6 +275,21 @@ class RegisterInstructor extends Component {
               fullWidth
               error={!this.state.courseNameIsFilled && this.state.wasSubmitted}
               value={this.state.courseName}
+              onChange={this.handleChange}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} lg={3}>
+            <TextField
+              id="TextField_license_number"
+              label="Número do brevê"
+              type="number"
+              name="licenseNumber"
+              required
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              error={!this.state.licenseNumberIsFilled && this.state.wasSubmitted}
+              value={this.state.licenseNumber}
               onChange={this.handleChange}
             />
           </Grid>

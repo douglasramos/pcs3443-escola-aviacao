@@ -32,9 +32,7 @@ class ListEditLessons extends Component {
   constructor() {
     super();
     this.state = {
-      IDField: '',
-      IDFieldIsFilled: '',
-      ID: '',
+      ID: String(JSON.parse(localStorage.getItem('ID'))),
       completeLessonList: [],
       incompleteLessonList: [],
       flightTime: '',
@@ -64,6 +62,7 @@ class ListEditLessons extends Component {
       displayConflict: false,
       displayAlert: true,
     };
+    this.getLessonList();
   }
 
   handleChange = event => {
@@ -87,47 +86,45 @@ class ListEditLessons extends Component {
   };
 
   getLessonList = () => {
-    if (this.state.IDFieldIsFilled) {
-      this.setState({ completeLessonList: [] }, this.setState({ incompleteLessonList: [] }));
-      axios({
-        method: 'get',
-        url: `http://localhost:8888/api/students/${this.state.IDField}/lessons`,
+    this.setState({ completeLessonList: [] }, this.setState({ incompleteLessonList: [] }));
+    axios({
+      method: 'get',
+      url: `http://localhost:8888/api/students/${this.state.ID}/lessons`,
+    })
+      .then(response => {
+        console.log(`Lists being split. Length:${response.data.length}`);
+        const complete = [];
+        const incomplete = [];
+        for (let i = 0; i < response.data.length; i += 1) {
+          if (response.data[i].status === 4) {
+            complete.push(response.data[i]);
+          } else {
+            incomplete.push(response.data[i]);
+          }
+        }
+        this.setState({ completeLessonList: complete }, () =>
+          this.setState({ incompleteLessonList: incomplete }, () =>
+            this.setState({ lessonsAreListed: true })
+          )
+        );
       })
-        .then(response => {
-          console.log(`Lists being split. Length:${response.data.length}`);
-          const complete = [];
-          const incomplete = [];
-          for (let i = 0; i < response.data.length; i += 1) {
-            if (response.data[i].status === 4) {
-              complete.push(response.data[i]);
-            } else {
-              incomplete.push(response.data[i]);
-            }
-          }
-          this.setState({ completeLessonList: complete }, () =>
-            this.setState({ incompleteLessonList: incomplete }, () =>
-              this.setState({ lessonsAreListed: true }, this.setState({ ID: this.state.IDField }))
-            )
-          );
-        })
-        .catch(error => {
-          console.log('Aluno não encontrado');
-          if (error.response.status === 404) {
-            this.setState({ displayNotFound: true }, this.setState({ lessonsAreListed: false }));
-          }
-        });
-      axios({
-        method: 'get',
-        url: `http://localhost:8888/api/students/${this.state.IDField}`,
-      }).then(response => {
-        console.log('Dados do aluno: \r\n');
-        console.log(response.data);
-        this.setState({
-          flightTime: response.data.flightTime,
-          courseDuration: response.data.courseDuration,
-        });
+      .catch(error => {
+        console.log('Aluno não encontrado');
+        if (error.response.status === 404) {
+          this.setState({ displayNotFound: true }, this.setState({ lessonsAreListed: false }));
+        }
       });
-    }
+    axios({
+      method: 'get',
+      url: `http://localhost:8888/api/students/${this.state.ID}`,
+    }).then(response => {
+      console.log('Dados do aluno: \r\n');
+      console.log(response.data);
+      this.setState({
+        flightTime: response.data.flightTime,
+        courseDuration: response.data.courseDuration,
+      });
+    });
   };
 
   closeSuccess = () => {
@@ -534,36 +531,6 @@ class ListEditLessons extends Component {
         <Typography component="h4" variant="h4" gutterBottom>
           Consulta de aulas
         </Typography>
-        <Grid container spacing={16}>
-          <Grid item style={{ position: 'relative', top: '-10px' }}>
-            <TextField
-              id="TextField_IDField"
-              label="ID do aluno"
-              type="number"
-              name="IDField"
-              required
-              variant="outlined"
-              margin="normal"
-              value={this.state.IDField}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              className="m1-3"
-              variant="contained"
-              onClick={this.getLessonList}
-              style={{
-                backgroundColor: '#2cad58',
-                color: 'white',
-                position: 'relative',
-                top: '15px',
-              }}
-            >
-              Listar aulas
-            </Button>
-          </Grid>
-        </Grid>
         {!this.state.lessonsAreListed ? (
           ' '
         ) : (
