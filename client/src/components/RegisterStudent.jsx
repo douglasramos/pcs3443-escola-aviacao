@@ -17,14 +17,19 @@ class RegisterStudent extends Component {
 
     this.state = {
       name: '',
+      email: '',
+      password: '',
       birthDate: '',
       address: '',
       course: '',
       nameIsFilled: false,
+      emailIsFilled: false,
+      passwordIsFilled: false,
       birthDateIsFilled: false,
       addressIsFilled: false,
-      courseIsFilled: '',
+      courseIsFilled: false,
       dialogOpen: false,
+      error: false,
       wasSubmitted: false,
       responseID: '',
     };
@@ -35,6 +40,8 @@ class RegisterStudent extends Component {
     this.setState({ wasSubmitted: true });
     if (
       this.state.nameIsFilled &&
+      this.state.emailIsFilled &&
+      this.state.passwordIsFilled &&
       this.state.birthDateIsFilled &&
       this.state.addressIsFilled &&
       this.state.courseIsFilled
@@ -42,6 +49,8 @@ class RegisterStudent extends Component {
       axios
         .post(url, {
           name: this.state.name,
+          email: this.state.email,
+          password: this.state.password,
           birth_date: this.state.birthDate,
           address: this.state.address,
           courseDuration: this.state.course,
@@ -50,6 +59,10 @@ class RegisterStudent extends Component {
           const responseString = response.data.endpoint;
           const ID = responseString.split('api/students/').pop();
           this.setState({ responseID: ID }, () => this.setState({ dialogOpen: true }));
+        })
+        .catch(error => {
+          console.log(error.response);
+          this.setState({ error: true });
         });
     }
   };
@@ -57,13 +70,19 @@ class RegisterStudent extends Component {
   resetState = () => {
     this.setState({
       name: '',
+      email: '',
+      password: '',
       birthDate: '',
       address: '',
       course: '',
       nameIsFilled: false,
+      emailIsFilled: false,
+      passwordIsFilled: false,
       birthDateIsFilled: false,
       addressIsFilled: false,
       courseIsFilled: false,
+      dialogOpen: false,
+      error: false,
       wasSubmitted: false,
       responseID: '',
     });
@@ -97,12 +116,13 @@ class RegisterStudent extends Component {
     this.setState({ dialogOpen: false }, this.resetState());
   };
 
+  closeError = () => {
+    this.setState({ error: false });
+  };
+
   render() {
     return (
       <div>
-        <Typography component="h4" variant="h4" gutterBottom>
-          Cadastro de aluno
-        </Typography>
         <Dialog
           open={this.state.dialogOpen}
           onClose={this.handleDialogClose}
@@ -116,9 +136,24 @@ class RegisterStudent extends Component {
             </DialogContentText>
           </DialogContent>
         </Dialog>
-
+        <Dialog
+          open={this.state.error}
+          onClose={this.closeError}
+          aria-labelledby="errorTitle"
+          aria-describedby="errorText"
+        >
+          <DialogTitle id="errorTitle">ERRO</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="errorText">
+              O email fornecido já está cadastrado
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+        <Typography component="h4" variant="h4" gutterBottom>
+          Cadastro de aluno
+        </Typography>
         <Grid container spacing={16}>
-          <Grid item xs={12}>
+          <Grid item lg={3}>
             <TextField
               id="TextField_name"
               label="Nome"
@@ -133,7 +168,7 @@ class RegisterStudent extends Component {
               onChange={this.handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item lg={5}>
             <TextField
               id="TextField_address"
               label="Endereço"
@@ -148,13 +183,12 @@ class RegisterStudent extends Component {
               onChange={this.handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item lg={4}>
             <TextField
               id="TextField_birth_date"
               label="Data de Nascimento"
               type="date"
               name="birthDate"
-              autoComplete="new-password"
               required
               variant="outlined"
               margin="normal"
@@ -165,7 +199,37 @@ class RegisterStudent extends Component {
               onChange={this.handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item lg={4}>
+            <TextField
+              id="TextField_email"
+              label="Email"
+              type="email"
+              name="email"
+              required
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              error={!this.state.emailIsFilled && this.state.wasSubmitted}
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+          </Grid>
+          <Grid item lg={3}>
+            <TextField
+              id="TextField_password"
+              label="Senha"
+              type="password"
+              name="password"
+              required
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              error={!this.state.passwordIsFilled && this.state.wasSubmitted}
+              value={this.state.password}
+              onChange={this.handleChange}
+            />
+          </Grid>
+          <Grid item lg={5} style={{ position: 'relative', top: '16px' }}>
             <TextField
               id="TextField_course"
               select

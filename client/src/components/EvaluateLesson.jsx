@@ -29,9 +29,7 @@ class EvaluateLesson extends Component {
   constructor() {
     super();
     this.state = {
-      instructorIDField: '',
-      instructorID: '',
-      instructorIDFieldIsFilled: false,
+      instructorID: String(JSON.parse(localStorage.getItem('ID'))),
       lessonsAreListed: false,
       lessonList: [],
       evaluationMenuIsOpen: false,
@@ -46,6 +44,7 @@ class EvaluateLesson extends Component {
       displayNotFound: false,
       evaluationWasSubmitted: false,
     };
+    this.getLessonList();
   }
 
   handleChange = event => {
@@ -69,25 +68,19 @@ class EvaluateLesson extends Component {
   };
 
   getLessonList = () => {
-    if (this.state.instructorIDFieldIsFilled) {
-      axios({
-        method: 'get',
-        url: `http://localhost:8888/api/instructors/${this.state.instructorIDField}/lessons`,
+    axios({
+      method: 'get',
+      url: `http://localhost:8888/api/instructors/${this.state.instructorID}/lessons`,
+    })
+      .then(response => {
+        console.log(response.data);
+        this.setState({ lessonList: response.data }, this.setState({ lessonsAreListed: true }));
       })
-        .then(response => {
-          console.log(response.data);
-          const newID = this.state.instructorIDField;
-          this.setState(
-            { lessonList: response.data },
-            this.setState({ lessonsAreListed: true }, this.setState({ instructorID: newID }))
-          );
-        })
-        .catch(error => {
-          if (error.response.status === 404) {
-            this.setState({ displayNotFound: true }, this.setState({ lessonsAreListed: false }));
-          }
-        });
-    }
+      .catch(error => {
+        if (error.response.status === 404) {
+          this.setState({ displayNotFound: true }, this.setState({ lessonsAreListed: false }));
+        }
+      });
   };
 
   openEvaluationPopup = (event, lessonID) => {
@@ -153,9 +146,6 @@ class EvaluateLesson extends Component {
   render() {
     return (
       <div className="container mt-3">
-        <Typography component="h4" variant="h4" gutterBottom>
-          Avaliação de voo
-        </Typography>
         <Dialog
           open={this.state.displayNotFound}
           onClose={this.closeNotFound}
@@ -265,36 +255,9 @@ class EvaluateLesson extends Component {
             </Grid>
           </DialogContent>
         </Dialog>
-        <Grid container spacing={16}>
-          <Grid item style={{ position: 'relative', top: '-10px' }}>
-            <TextField
-              id="TextField_instructorIDField"
-              label="ID do instrutor"
-              type="number"
-              name="instructorIDField"
-              required
-              variant="outlined"
-              margin="normal"
-              value={this.state.instructorIDField}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              className="m1-3"
-              variant="contained"
-              onClick={this.getLessonList}
-              style={{
-                backgroundColor: '#2cad58',
-                color: 'white',
-                position: 'relative',
-                top: '15px',
-              }}
-            >
-              Listar aulas
-            </Button>
-          </Grid>
-        </Grid>
+        <Typography component="h4" variant="h4" gutterBottom>
+          Avaliação de voo
+        </Typography>
         <Grid container spacing={16}>
           <Grid item>
             {!this.state.lessonsAreListed ? (

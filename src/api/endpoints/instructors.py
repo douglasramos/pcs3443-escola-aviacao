@@ -27,6 +27,8 @@ class instructor(Resource):
         json_data = request.get_json(force=True)
 
         name = json_data['name']
+        email = json_data['email']
+        password = json_data['password']
         license_number = json_data['license_number']
         address = json_data['address']
         birth_date = datetime.strptime(
@@ -36,8 +38,8 @@ class instructor(Resource):
             json_data['graduation_date'], "%Y-%m-%d").date()
         institution = json_data['institution']
 
-        response = jsonify(insert_new_instructor(name, license_number, address, birth_date,
-                                                 course_name, graduation_date, institution))
+        response = jsonify(insert_new_instructor(name=name, license_number=license_number, address=address, email=email, password=password, birth_date=birth_date,
+                                                 course_name=course_name, graduation_date=graduation_date, institution=institution))
         response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 

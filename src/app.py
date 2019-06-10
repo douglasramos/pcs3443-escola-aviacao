@@ -4,6 +4,8 @@ from flask_cors import CORS
 from api.endpoints.instructors import ns as instructors_namespace
 from api.endpoints.students import ns as students_namespace
 from api.endpoints.lessons import ns as lessons_namespace
+from api.endpoints.login import ns as login_namespace
+from api.endpoints.admin import ns as admin_namespace
 from persistance.persistance import db, initialize_database
 from settings import *
 from test_functions import populate_database, delete_database
@@ -33,12 +35,18 @@ def initialize_app(app):
     api.add_namespace(instructors_namespace)
     api.add_namespace(students_namespace)
     api.add_namespace(lessons_namespace)
+    api.add_namespace(login_namespace)
+    api.add_namespace(admin_namespace)
     app.register_blueprint(blueprint_api)
+
+    # Database
 
     initialize_database()
     # remove todas as tabelas do banco de dados, independetemente de estarem vazias ou não
     # delete_database()
     # populate_database()  # preenche as tabelas Student e Instructor caso estejam vazias
+
+    # Login system
 
 
 def main():

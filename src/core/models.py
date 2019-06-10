@@ -3,13 +3,23 @@ from datetime import datetime, date, time, timedelta
 from persistance.persistance import db
 
 
+class Admin(db.Entity):
+    """Admin Entity"""
+    _table_ = "Administradores"
+    ID = PrimaryKey(int, auto=True)
+    email = Required(str, unique=True)
+    password = Required(str)
+
+
 class Student(db.Entity):
     """Students Entity"""
 
     # Define o nome da tabela
-    _table_ = "students"
+    _table_ = "Alunos"
 
-    ID = PrimaryKey(int, auto=True)  # o ID será gerado automaticamente
+    ID = PrimaryKey(int, auto=True)
+    email = Required(str, unique=True)
+    password = Required(str)
     name = Required(str)
     address = Required(str)
     birth_date = Required(date)
@@ -23,15 +33,16 @@ class Instructor(db.Entity):
     """Instructors Entity"""
 
     # Define nome da tabela
-    _table_ = "instructors"
+    _table_ = "Instrutores"
 
-    ID = PrimaryKey(int, auto=True)  # o ID será gerado automaticamente
+    ID = PrimaryKey(int, auto=True)
+    email = Required(str, unique=True)
+    password = Required(str)
     name = Required(str)
     license_number = Required(int)  # número do brevê
     address = Required(str)
     birth_date = Required(date)
     course_name = Required(str)
-    # data de obtenção do diploma. Depois temos que ver como faz para se usar date ao invés de string
     graduation_date = Required(date)
     institution = Required(str)
     lessons = Set('Lesson')
@@ -41,8 +52,9 @@ class Lesson(db.Entity):
     """Lesson entity"""
 
     # Define o nome da tabela
-    _table_ = "lessons"
+    _table_ = "Aulas"
 
+    # o ID será gerado automaticamente, mas pela classe Login
     ID = PrimaryKey(int, auto=True)
     day = Required(date)
     expected_start = Required(time)

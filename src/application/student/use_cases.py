@@ -32,12 +32,17 @@ def get_student(id: int):
 
 
 @db_session
-def insert_new_student(name: str, address: str, birth_date: date, courseDuration: int):
+def insert_new_student(name: str, address: str, birth_date: date, courseDuration: int, email: str, password: str):
     flightTimeZero = timedelta(days=0, seconds=0, microseconds=0,
                                milliseconds=0, minutes=0, hours=0, weeks=0)
-    stud = Student(name=name, address=address,
+
+    if((Student.get(email=email)) != None):
+        abort(400, 'Email já cadastrado')
+
+    stud = Student(name=name, address=address, email=email, password=password,
                    birth_date=birth_date, flightTime=flightTimeZero,
                    licenseAvailable=False, courseDuration=courseDuration)
+
     commit()
 
     return {"endpoint": "api/students/" + str(stud.ID)}

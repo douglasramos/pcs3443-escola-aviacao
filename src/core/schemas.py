@@ -1,8 +1,16 @@
 from marshmallow import Schema, fields, post_dump
 
 
+class AdminSchema(Schema):
+    ID = fields.Int()
+    email = fields.Str()
+    password = fields.Str()
+
+
 class StudentSchema(Schema):
     ID = fields.Int()
+    email = fields.Str()
+    password = fields.Str()
     name = fields.Str()
     address = fields.Str()
     birth_date = fields.Date()
@@ -22,6 +30,8 @@ class StudentSchema(Schema):
 
 class InstructorSchema(Schema):
     ID = fields.Int()
+    email = fields.Str()
+    password = fields.Str()
     name = fields.Str()
     license_number = fields.Int()
     address = fields.Str()

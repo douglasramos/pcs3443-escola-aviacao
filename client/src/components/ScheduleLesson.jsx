@@ -7,18 +7,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
 import axios from 'axios';
-import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 
 class ScheduleLesson extends Component {
   constructor() {
     super();
     this.state = {
-      idField: '',
-      idFieldIsFilled: false,
+      ID: String(JSON.parse(localStorage.getItem('ID'))),
       date: new Date().toISOString().split('T')[0],
       dateIsFilled: true,
       startTime: '',
@@ -28,7 +24,6 @@ class ScheduleLesson extends Component {
       instructorList: [],
       selectedInstructor: '',
       selectedInstructorIsFilled: false,
-      instructorsAreListed: false,
       displaySuccess: false,
       displayStudentNotFound: false,
       displayStudentConflict: false,
@@ -58,12 +53,7 @@ class ScheduleLesson extends Component {
   };
 
   getAvailableInstructors = () => {
-    if (
-      this.state.idFieldIsFilled &&
-      this.state.dateIsFilled &&
-      this.state.startTimeIsFilled &&
-      this.state.endTimeIsFilled
-    ) {
+    if (this.state.dateIsFilled && this.state.startTimeIsFilled && this.state.endTimeIsFilled) {
       axios({
         method: 'get',
         url: 'http://localhost:8888/api/lessons/availableinstructors',
@@ -74,10 +64,7 @@ class ScheduleLesson extends Component {
           finish: String(`${this.state.endTime}:00`),
         },
       }).then(response =>
-        this.setState(
-          { instructorList: response.data },
-          this.setState({ instructorsAreListed: true }, () => console.log(response.data))
-        )
+        this.setState({ instructorList: response.data }, () => console.log(response.data))
       );
     } else {
       this.setState({ selectedInstructorIsFilled: false }, () =>
@@ -103,33 +90,26 @@ class ScheduleLesson extends Component {
   };
 
   resetState = () => {
-    this.setState({
-      idField: '',
-      idFieldIsFilled: false,
-      date: new Date().toISOString().split('T')[0],
-      dateIsFilled: true,
-      startTime: '',
-      startTimeIsFilled: false,
-      endTime: '',
-      endTimeIsFilled: false,
-      instructorList: [],
-      selectedInstructor: '',
-      selectedInstructorIsFilled: false,
-      instructorsAreListed: false,
-      wasSubmitted: false,
-    });
-  };
-
-  displayState = () => {
-    console.log(this.state);
-    const ans = Array.isArray(this.state.instructorList);
-    console.log(ans);
+    this.setState(
+      {
+        date: new Date().toISOString().split('T')[0],
+        dateIsFilled: true,
+        startTime: '',
+        startTimeIsFilled: false,
+        endTime: '',
+        endTimeIsFilled: false,
+        instructorList: [],
+        selectedInstructor: '',
+        selectedInstructorIsFilled: false,
+        wasSubmitted: false,
+      },
+      () => window.location.reload()
+    );
   };
 
   submit = () => {
     const url = 'http://localhost:8888/api/lessons/';
     if (
-      this.state.idFieldIsFilled &&
       this.state.dateIsFilled &&
       this.state.startTimeIsFilled &&
       this.state.endTimeIsFilled &&
@@ -140,7 +120,7 @@ class ScheduleLesson extends Component {
           day: this.state.date,
           expected_start: String(`${this.state.startTime}:00`),
           expected_finish: String(`${this.state.endTime}:00`),
-          student_id: this.state.idField,
+          student_id: this.state.ID,
           instructor_id: this.state.selectedInstructor,
         })
         .then(response => this.setState({ displaySuccess: true }, console.log(response)))
@@ -217,21 +197,6 @@ class ScheduleLesson extends Component {
           <Grid container spacing={16}>
             <Grid item lg={4}>
               <TextField
-                id="TextField_id"
-                label="ID do aluno"
-                type="number"
-                name="idField"
-                required
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                value={this.state.idField}
-                onChange={this.handleChange}
-                error={this.state.wasSubmitted && !this.state.idFieldIsFilled}
-              />
-            </Grid>
-            <Grid item lg={4}>
-              <TextField
                 id="TextField_date"
                 label="Data"
                 type="date"
@@ -278,17 +243,16 @@ class ScheduleLesson extends Component {
                 error={this.state.wasSubmitted && !this.state.endTimeIsFilled}
               />
             </Grid>
-          </Grid>
-          <Grid container spacing={16} justify="space-between">
-            <Grid item>
+            <Grid item lg={4}>
               <TextField
                 id="TextField_selectedInstructor"
                 select
                 label="Instrutor"
                 name="selectedInstructor"
+                fullWidth
                 value={this.state.selectedInstructor}
                 onChange={this.handleChange}
-                style={{ width: '300px' }}
+                style={{ position: 'relative', top: '16px' }}
                 error={this.state.wasSubmitted && !this.state.selectedInstructorIsFilled}
                 variant="outlined"
               >
@@ -299,6 +263,8 @@ class ScheduleLesson extends Component {
                 ))}
               </TextField>
             </Grid>
+          </Grid>
+          <Grid container spacing={16} justify="flex-end">
             <Grid item>
               <Button onClick={this.displayState} />
             </Grid>
