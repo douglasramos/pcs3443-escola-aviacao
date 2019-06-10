@@ -146,6 +146,65 @@ class EvaluateLesson extends Component {
   render() {
     return (
       <div className="container mt-3">
+        <Typography component="h4" variant="h4" gutterBottom>
+          Lista de aulas
+        </Typography>
+        <Grid container spacing={16}>
+          <Grid item>
+            {!this.state.lessonsAreListed ? (
+              ''
+            ) : (
+              <Paper>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">ID da aula</TableCell>
+                      <TableCell align="center">Aluno</TableCell>
+                      <TableCell align="center">Data</TableCell>
+                      <TableCell align="center">Início previsto</TableCell>
+                      <TableCell align="center">Término previsto</TableCell>
+                      <TableCell align="center">Avaliar aula</TableCell>
+                      <TableCell align="center">Nota</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {this.state.lessonList.map(lesson => (
+                      <TableRow key={lesson.ID}>
+                        <TableCell align="center">{lesson.ID}</TableCell>
+                        <TableCell align="center">{lesson.student.name}</TableCell>
+                        <TableCell align="center">{lesson.day}</TableCell>
+                        <TableCell align="center">
+                          {lesson.expected_start.substring(0, 5)}
+                        </TableCell>
+                        <TableCell align="center">
+                          {lesson.expected_finish.substring(0, 5)}
+                        </TableCell>
+                        <TableCell align="center">
+                          {lesson.status === 4 ? (
+                            <Icon color="primary" style={{ position: 'relative', top: '-2px' }}>
+                              <CheckCircle />
+                            </Icon>
+                          ) : (
+                            <IconButton
+                              color="primary"
+                              onClick={event => this.openEvaluationPopup(event, lesson.ID)}
+                              style={{ position: 'relative', top: '-2px' }}
+                            >
+                              <Edit />
+                            </IconButton>
+                          )}
+                        </TableCell>
+                        <TableCell align="center">
+                          {lesson.status === 4 ? <div>{lesson.grade}</div> : <div>-</div>}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Paper>
+            )}
+          </Grid>
+        </Grid>
         <Dialog
           open={this.state.displayNotFound}
           onClose={this.closeNotFound}
@@ -177,6 +236,7 @@ class EvaluateLesson extends Component {
           onClose={this.closeEvaluationMenu}
           aria-labelledby="evaluationMenuTitle"
           aria-describedby="evaluationMenuTitle"
+          maxWidth="false"
         >
           <DialogTitle id="evaluationMenuTitle">Avaliação da aula</DialogTitle>
           <DialogContent>
@@ -206,12 +266,12 @@ class EvaluateLesson extends Component {
                   style={{ minWidth: 100 }}
                   error={this.state.evaluationWasSubmitted && !this.state.gradeIsFilled}
                 >
-                  <InputLabel>Parecer</InputLabel>
+                  <InputLabel>Nota</InputLabel>
                   <Select
                     name="grade"
                     value={this.state.grade}
                     onChange={this.handleChange}
-                    input={<OutlinedInput name="Parecer" labelWidth={100} />}
+                    input={<OutlinedInput name="Nota" labelWidth={100} />}
                   >
                     <option value="" />
                     <option value={0}>0</option>
@@ -228,11 +288,12 @@ class EvaluateLesson extends Component {
                   id="TextField_commment"
                   label="Comentários"
                   multiline
-                  rowsMax="3"
+                  rows="4"
                   name="comment"
                   margin="normal"
                   value={this.state.commment}
                   onChange={this.handleChange}
+                  style={{ minWidth: 600 }}
                   variant="outlined"
                 />
               </Grid>
@@ -249,67 +310,12 @@ class EvaluateLesson extends Component {
                     top: '15px',
                   }}
                 >
-                  Submeter avaliação
+                  Avaliar
                 </Button>
               </Grid>
             </Grid>
           </DialogContent>
         </Dialog>
-        <Typography component="h4" variant="h4" gutterBottom>
-          Avaliação de voo
-        </Typography>
-        <Grid container spacing={16}>
-          <Grid item>
-            {!this.state.lessonsAreListed ? (
-              ''
-            ) : (
-              <Paper>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="center">ID da aula</TableCell>
-                      <TableCell align="center">Aluno</TableCell>
-                      <TableCell align="center">Data</TableCell>
-                      <TableCell align="center">Início previsto</TableCell>
-                      <TableCell align="center">Término previsto</TableCell>
-                      <TableCell align="center">Avaliar aula</TableCell>
-                      <TableCell align="center">Parecer atribuído</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {this.state.lessonList.map((lesson, index) => (
-                      <TableRow key={index}>
-                        <TableCell align="center">{lesson.ID}</TableCell>
-                        <TableCell align="center">{lesson.student.name}</TableCell>
-                        <TableCell align="center">{lesson.day}</TableCell>
-                        <TableCell align="center">{lesson.expected_start}</TableCell>
-                        <TableCell align="center">{lesson.expected_finish}</TableCell>
-                        <TableCell align="center">
-                          {lesson.status === 4 ? (
-                            <Icon color="primary" style={{ position: 'relative', top: '-2px' }}>
-                              <CheckCircle />
-                            </Icon>
-                          ) : (
-                            <IconButton
-                              color="primary"
-                              onClick={event => this.openEvaluationPopup(event, lesson.ID)}
-                              style={{ position: 'relative', top: '-2px' }}
-                            >
-                              <Edit />
-                            </IconButton>
-                          )}
-                        </TableCell>
-                        <TableCell align="center">
-                          {lesson.status === 4 ? <div>{lesson.grade}</div> : <div>-</div>}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Paper>
-            )}
-          </Grid>
-        </Grid>
       </div>
     );
   }

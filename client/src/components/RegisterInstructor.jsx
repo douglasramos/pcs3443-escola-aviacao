@@ -9,6 +9,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Paper from '@material-ui/core/Paper';
 
 class RegisterInstructor extends Component {
   constructor() {
@@ -140,190 +141,192 @@ class RegisterInstructor extends Component {
 
   render() {
     return (
-      <div>
-        <Dialog
-          open={this.state.dialogOpen}
-          onClose={this.handleDialogClose}
-          aria-labelledby="registerSucessTitle"
-          aria-describedby="registerSuccessText"
-        >
-          <DialogTitle id="registerSucessTitle">SUCESSO</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="registerSuccessText">
-              Novo instrutor cadastrado. ID: {this.state.responseID}
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          open={this.state.error}
-          onClose={this.closeError}
-          aria-labelledby="errorTitle"
-          aria-describedby="errorText"
-        >
-          <DialogTitle id="errorTitle">ERRO</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="errorText">
-              O email fornecido já está cadastrado
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
-        <Typography component="h4" variant="h4" gutterBottom>
-          Cadastro de Instrutor
-        </Typography>
-        <Grid container spacing={16}>
-          <Grid item xs={12} sm={6} lg={4}>
-            <TextField
-              id="TextField_name"
-              label="Nome"
-              type="text"
-              name="name"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.nameIsFilled && this.state.wasSubmitted}
-              value={this.state.name}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} lg={5}>
-            <TextField
-              id="TextField_address"
-              label="Endereço"
-              type="text"
-              name="address"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.addressIsFilled && this.state.wasSubmitted}
-              value={this.state.address}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} lg={3}>
-            <TextField
-              id="TextField_birth_date"
-              label="Data de Nascimento"
-              type="date"
-              name="birthDate"
-              required
-              variant="outlined"
-              margin="normal"
-              InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
-              fullWidth
-              error={!this.state.birthDateIsFilled && this.state.wasSubmitted}
-              value={this.state.birthDate}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item lg={4}>
-            <TextField
-              id="TextField_email"
-              label="Email"
-              type="email"
-              name="email"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.emailIsFilled && this.state.wasSubmitted}
-              value={this.state.email}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item lg={2}>
-            <TextField
-              id="TextField_password"
-              label="Senha"
-              type="password"
-              name="password"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.passwordIsFilled && this.state.wasSubmitted}
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} lg={3}>
-            <TextField
-              id="TextField_institution"
-              label="Instituição cursada"
-              type="text"
-              name="institution"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.institutionIsFilled && this.state.wasSubmitted}
-              value={this.state.institution}
-              onChange={this.handleChange}
-            />
-          </Grid>
+      <Paper style={{ padding: 30 }}>
+        <div>
+          <Typography component="h4" variant="h4" gutterBottom>
+            Cadastro de Instrutor
+          </Typography>
+          <Grid container spacing={16}>
+            <Grid item xs={12} sm={6} lg={4}>
+              <TextField
+                id="TextField_name"
+                label="Nome"
+                type="text"
+                name="name"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.nameIsFilled && this.state.wasSubmitted}
+                value={this.state.name}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={5}>
+              <TextField
+                id="TextField_address"
+                label="Endereço"
+                type="text"
+                name="address"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.addressIsFilled && this.state.wasSubmitted}
+                value={this.state.address}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={3}>
+              <TextField
+                id="TextField_birth_date"
+                label="Data de Nascimento"
+                type="date"
+                name="birthDate"
+                required
+                variant="outlined"
+                margin="normal"
+                InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
+                fullWidth
+                error={!this.state.birthDateIsFilled && this.state.wasSubmitted}
+                value={this.state.birthDate}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item lg={4}>
+              <TextField
+                id="TextField_email"
+                label="Email"
+                type="email"
+                name="email"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.emailIsFilled && this.state.wasSubmitted}
+                value={this.state.email}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item lg={2}>
+              <TextField
+                id="TextField_password"
+                label="Senha"
+                type="password"
+                name="password"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.passwordIsFilled && this.state.wasSubmitted}
+                value={this.state.password}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={3}>
+              <TextField
+                id="TextField_institution"
+                label="Instituição cursada"
+                type="text"
+                name="institution"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.institutionIsFilled && this.state.wasSubmitted}
+                value={this.state.institution}
+                onChange={this.handleChange}
+              />
+            </Grid>
 
-          <Grid item xs={12} sm={6} lg={3}>
-            <TextField
-              id="TextField_course_name"
-              label="Nome do curso"
-              type="text"
-              name="courseName"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.courseNameIsFilled && this.state.wasSubmitted}
-              value={this.state.courseName}
-              onChange={this.handleChange}
-            />
+            <Grid item xs={12} sm={6} lg={3}>
+              <TextField
+                id="TextField_course_name"
+                label="Nome do curso"
+                type="text"
+                name="courseName"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.courseNameIsFilled && this.state.wasSubmitted}
+                value={this.state.courseName}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={3}>
+              <TextField
+                id="TextField_license_number"
+                label="Número do brevê"
+                type="number"
+                name="licenseNumber"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.licenseNumberIsFilled && this.state.wasSubmitted}
+                value={this.state.licenseNumber}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} lg={3}>
+              <TextField
+                id="TextField_graduation_date"
+                label="Data de conclusão de curso"
+                type="date"
+                name="graduationDate"
+                required
+                variant="outlined"
+                margin="normal"
+                InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
+                fullWidth
+                error={!this.state.graduationDateIsFilled && this.state.wasSubmitted}
+                value={this.state.graduationDate}
+                onChange={this.handleChange}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={6} lg={3}>
-            <TextField
-              id="TextField_license_number"
-              label="Número do brevê"
-              type="number"
-              name="licenseNumber"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.licenseNumberIsFilled && this.state.wasSubmitted}
-              value={this.state.licenseNumber}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} lg={3}>
-            <TextField
-              id="TextField_graduation_date"
-              label="Data de conclusão de curso"
-              type="date"
-              name="graduationDate"
-              required
-              variant="outlined"
-              margin="normal"
-              InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
-              fullWidth
-              error={!this.state.graduationDateIsFilled && this.state.wasSubmitted}
-              value={this.state.graduationDate}
-              onChange={this.handleChange}
-            />
-          </Grid>
-        </Grid>
-        <div className="mt-3 text-right">
-          <Button variant="outlined" onClick={this.resetState}>
-            cancelar
-          </Button>
-          <Button
-            className="ml-3"
-            variant="contained"
-            style={{ backgroundColor: '#2cad58', color: 'white' }}
-            onClick={this.submitNew}
+          <div className="mt-3 text-right">
+            <Button variant="outlined" onClick={this.resetState}>
+              cancelar
+            </Button>
+            <Button
+              className="ml-3"
+              variant="contained"
+              style={{ backgroundColor: '#2cad58', color: 'white' }}
+              onClick={this.submitNew}
+            >
+              cadastrar
+            </Button>
+          </div>
+          <Dialog
+            open={this.state.dialogOpen}
+            onClose={this.handleDialogClose}
+            aria-labelledby="registerSucessTitle"
+            aria-describedby="registerSuccessText"
           >
-            cadastrar
-          </Button>
+            <DialogTitle id="registerSucessTitle">SUCESSO</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="registerSuccessText">
+                Novo instrutor cadastrado. ID: {this.state.responseID}
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={this.state.error}
+            onClose={this.closeError}
+            aria-labelledby="errorTitle"
+            aria-describedby="errorText"
+          >
+            <DialogTitle id="errorTitle">ERRO</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="errorText">
+                O email fornecido já está cadastrado
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
         </div>
-      </div>
+      </Paper>
     );
   }
 }

@@ -75,17 +75,12 @@ def update_instructor(id: int, **args):
 
 @db_session
 def get_lesson_list(id: int):
-    lessons = []
-    lesson_query = Lesson.select()
+
     try:  # verifica-se, inicialmente se o instrutor consta no BD
         instr = Instructor[id]
     except ObjectNotFound:
         abort(404)
 
-    for l in lesson_query:
-        if l.instructor.ID == id:
-            e_s = l.expected_start.strftime('%H:%M:%S')
-            e_f = l.expected_finish.strftime('%H:%M:%S')
-            lessons.append(l)
+    lessons = select(l for l in Lesson if l.instructor.ID == id)
     schema = LessonSchema(many=True)
     return schema.dump(list(lessons)).data
