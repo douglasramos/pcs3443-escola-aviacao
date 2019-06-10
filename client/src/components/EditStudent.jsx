@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -8,8 +9,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Tooltip from '@material-ui/core/Tooltip';
-import axios from 'axios';
 import IconButton from '@material-ui/core/IconButton';
+import Paper from '@material-ui/core/Paper';
 // ícones
 import Search from '@material-ui/icons/Search';
 import DeleteForever from '@material-ui/icons/DeleteForever';
@@ -222,172 +223,169 @@ class EditStudent extends Component {
     }
 
     return (
-      <div>
-        <Typography component="h4" variant="h4" gutterBottom>
-          Consulta, alteração e exclusão de aluno
-        </Typography>
-        <Grid container justify="space-between">
-          <Grid item>
+      <Paper style={{ padding: 30 }}>
+        <div>
+          <Typography component="h4" variant="h4" gutterBottom>
+            Busca de aluno
+          </Typography>
+          <Grid container justify="space-between">
+            <Grid item>
+              <TextField
+                id="TextField_id"
+                label="Buscar aluno por ID"
+                type="number"
+                name="idField"
+                required
+                variant="outlined"
+                margin="normal"
+                value={this.state.idField}
+                onChange={this.handleChange}
+              />
+              <Tooltip title="Buscar aluno">
+                <IconButton
+                  color="primary"
+                  onClick={this.getByID}
+                  style={{ position: 'relative', top: '20px', left: '4px' }}
+                >
+                  <Search />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+            <Grid item>
+              {!this.state.idGet ? (
+                ''
+              ) : (
+                <div style={{ 'text-align': 'end' }}>
+                  <Tooltip title="Deletar aluno">
+                    <IconButton
+                      color="secondary"
+                      onClick={this.deleteStudent}
+                      style={{ top: '20px' }}
+                    >
+                      <DeleteForever />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Editar aluno">
+                    <IconButton color="secondary" onClick={this.enableEdit} style={{ top: '20px' }}>
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+              )}
+            </Grid>
+          </Grid>
+          {!this.state.idGet ? null : (
             <TextField
-              id="TextField_id"
-              label="Buscar aluno por ID"
-              type="number"
-              name="idField"
-              required
+              id="TextField_name"
+              label="Nome"
+              placeholder={this.state.name}
+              type="text"
+              name="edit_name"
               variant="outlined"
+              required
+              fullWidth
               margin="normal"
-              value={this.state.idField}
+              disabled={!this.state.edit}
+              value={this.state.edit_name}
               onChange={this.handleChange}
+              error={!this.state.edit_nameIsFilled && this.state.edit}
             />
-            <Tooltip title="Buscar aluno">
-              <IconButton
-                color="primary"
-                onClick={this.getByID}
-                style={{ position: 'relative', top: '20px', left: '4px' }}
-              >
-                <Search />
-              </IconButton>
-            </Tooltip>
-          </Grid>
-          <Grid item>
-            {!this.state.idGet ? (
-              ''
-            ) : (
-              <div>
-                <Tooltip title="Deletar aluno">
-                  <IconButton
-                    color="secondary"
-                    onClick={this.deleteStudent}
-                    style={{ position: 'relative', top: '20px', left: '4px' }}
-                  >
-                    <DeleteForever />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Editar aluno">
-                  <IconButton
-                    color="secondary"
-                    onClick={this.enableEdit}
-                    style={{ position: 'relative', top: '20px', left: '4px' }}
-                  >
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-              </div>
-            )}
-          </Grid>
-        </Grid>
-
-        <Dialog
-          open={this.state.displayDeleteSuccess}
-          onClose={this.closeDeleteSuccessDialog}
-          aria-labelledby="deleteSuccessDialogTitle"
-          aria-describedby="deleteSuccessDialogDescription"
-        >
-          <DialogTitle id="deleteSuccessDialogTitle">Operação completada</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="deleteSuccessDialogDescription">
-              Aluno deletado com sucesso
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          open={this.state.displayUpdateSuccess}
-          onClose={this.closeUpdateSuccessDialog}
-          aria-labelledby="updateSuccessDialogTitle"
-          aria-describedby="udpateSuccessDialogDescription"
-        >
-          <DialogTitle id="updateSuccessDialogTitle">Operação completada</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="deleteSuccessDialogDescription">
-              Dados do aluno {this.state.edit_name} (ID:{this.state.idDisplay}) atualizados com
-              sucesso
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          open={this.state.displayNotFound}
-          onClose={this.closeNotFoundDialog}
-          aria-labelledby="notFoundDialogTitle"
-          aria-describedby="notFoundDialogDescription"
-        >
-          <DialogTitle id="notFoundDialogTitle">Operação não completada</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="notFoundDialogDescription">
-              O aluno com o ID {this.state.idField} não está cadastrado
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
-        {!this.state.idGet ? null : (
-          <TextField
-            id="TextField_name"
-            label="Nome"
-            placeholder={this.state.name}
-            type="text"
-            name="edit_name"
-            variant="outlined"
-            required
-            fullWidth
-            margin="normal"
-            disabled={!this.state.edit}
-            value={this.state.edit_name}
-            onChange={this.handleChange}
-            error={!this.state.edit_nameIsFilled && this.state.edit}
-          />
-        )}
-        {!this.state.idGet ? null : (
-          <TextField
-            id="TextField_address"
-            placeholder={this.state.address}
-            type="text"
-            label="Endereço"
-            name="edit_address"
-            variant="outlined"
-            required
-            fullWidth
-            margin="normal"
-            disabled={!this.state.edit}
-            value={this.state.edit_address}
-            onChange={this.handleChange}
-            error={!this.state.edit_addressIsFilled && this.state.edit}
-          />
-        )}
-        {!this.state.idGet ? null : (
-          <TextField
-            id="TextField_birth"
-            placeholder={this.state.birthDate}
-            type="date"
-            label="Data de nascimento"
-            name="edit_birthDate"
-            variant="outlined"
-            required
-            fullWidth
-            margin="normal"
-            InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
-            disabled={!this.state.edit}
-            value={this.state.edit_birthDate}
-            onChange={this.handleChange}
-            error={!this.state.edit_birthDateIsFilled && this.state.edit}
-          />
-        )}
-        {progress}
-        <div className="mt-3 text-right">
-          {this.state.idGet && this.state.edit ? (
-            <Button variant="outlined" color="primary" onClick={this.disableEdit}>
-              Cancelar
-            </Button>
-          ) : null}{' '}
-          {!this.state.edit ? null : (
-            <Button
-              className="m1-3"
-              variant="contained"
-              onClick={this.editAPI}
-              style={{ backgroundColor: '#2cad58', color: 'white' }}
-            >
-              Salvar alterações
-            </Button>
           )}
+          {!this.state.idGet ? null : (
+            <TextField
+              id="TextField_address"
+              placeholder={this.state.address}
+              type="text"
+              label="Endereço"
+              name="edit_address"
+              variant="outlined"
+              required
+              fullWidth
+              margin="normal"
+              disabled={!this.state.edit}
+              value={this.state.edit_address}
+              onChange={this.handleChange}
+              error={!this.state.edit_addressIsFilled && this.state.edit}
+            />
+          )}
+          {!this.state.idGet ? null : (
+            <TextField
+              id="TextField_birth"
+              placeholder={this.state.birthDate}
+              type="date"
+              label="Data de nascimento"
+              name="edit_birthDate"
+              variant="outlined"
+              required
+              fullWidth
+              margin="normal"
+              InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
+              disabled={!this.state.edit}
+              value={this.state.edit_birthDate}
+              onChange={this.handleChange}
+              error={!this.state.edit_birthDateIsFilled && this.state.edit}
+            />
+          )}
+          {progress}
+          <div className="mt-3 text-right">
+            {this.state.idGet && this.state.edit ? (
+              <Button variant="outlined" color="primary" onClick={this.disableEdit}>
+                Cancelar
+              </Button>
+            ) : null}{' '}
+            {!this.state.edit ? null : (
+              <Button
+                className="m1-3"
+                variant="contained"
+                onClick={this.editAPI}
+                style={{ backgroundColor: '#2cad58', color: 'white' }}
+              >
+                Salvar alterações
+              </Button>
+            )}
+          </div>
+          <Dialog
+            open={this.state.displayDeleteSuccess}
+            onClose={this.closeDeleteSuccessDialog}
+            aria-labelledby="deleteSuccessDialogTitle"
+            aria-describedby="deleteSuccessDialogDescription"
+          >
+            <DialogTitle id="deleteSuccessDialogTitle">Operação completada</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="deleteSuccessDialogDescription">
+                Aluno deletado com sucesso
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={this.state.displayUpdateSuccess}
+            onClose={this.closeUpdateSuccessDialog}
+            aria-labelledby="updateSuccessDialogTitle"
+            aria-describedby="udpateSuccessDialogDescription"
+          >
+            <DialogTitle id="updateSuccessDialogTitle">Operação completada</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="deleteSuccessDialogDescription">
+                Dados do aluno {this.state.edit_name} (ID:{this.state.idDisplay}) atualizados com
+                sucesso
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={this.state.displayNotFound}
+            onClose={this.closeNotFoundDialog}
+            aria-labelledby="notFoundDialogTitle"
+            aria-describedby="notFoundDialogDescription"
+          >
+            <DialogTitle id="notFoundDialogTitle">Operação não completada</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="notFoundDialogDescription">
+                O aluno com o ID {this.state.idField} não está cadastrado
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
         </div>
-      </div>
+      </Paper>
     );
   }
 }

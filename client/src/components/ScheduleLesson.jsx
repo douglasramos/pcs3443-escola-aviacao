@@ -139,60 +139,9 @@ class ScheduleLesson extends Component {
   render() {
     return (
       <div>
-        <Dialog
-          open={this.state.displaySuccess}
-          onClose={this.closeSuccess}
-          aria-labelledby="successDialogTitle"
-          aria-describedby="successDialogDescription"
-        >
-          <DialogTitle id="successDialogTitle">Operação completada</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="successDialogDescription">A aula foi agendada</DialogContentText>
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          open={this.state.displayStudentNotFound}
-          onClose={this.closeStudentNotFound}
-          aria-labelledby="studentNotFoundDialogTitle"
-          aria-describedby="studentNotFoundDialogDescription"
-        >
-          <DialogTitle id="studentNotFoundDialogTitle">Erro</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="studentNotFoundDialogDescription">
-              Aluno com o ID fornecido não está cadastrado
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog
-          open={this.state.displayStudentConflict}
-          onClose={this.closeStudentConflict}
-          aria-labelledby="studentConflictDialogTitle"
-          aria-describedby="studentConflictDialogDescription"
-        >
-          <DialogTitle id="studentConflictDialogTitle">A aula não pôde ser marcada</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="studentConflictDialogDescription">
-              A marcação dessa aula gera conflito na grade horária deste aluno
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          open={this.state.displayInstructorConflict}
-          onClose={this.closeInstructorConflict}
-          aria-labelledby="instructorConflictDialogTitle"
-          aria-describedby="instructorConflictDialogDescription"
-        >
-          <DialogTitle id="instructorConflictDialogTitle">A aula não pôde ser marcada</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="instructorConflictDialogDescription">
-              A marcação dessa aula gera conflito na grade horária deste instrutor
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
         <div className="container mt-3">
           <Typography component="h4" variant="h4" gutterBottom>
-            Marcar aula
+            Agendar
           </Typography>
           <Grid container spacing={16}>
             <Grid item lg={4}>
@@ -266,11 +215,7 @@ class ScheduleLesson extends Component {
           </Grid>
           <Grid container spacing={16} justify="flex-end">
             <Grid item>
-              <Button onClick={this.displayState} />
-            </Grid>
-            <Grid item>
               <Button
-                className="m1-3"
                 variant="contained"
                 onClick={this.submit}
                 style={{
@@ -284,6 +229,60 @@ class ScheduleLesson extends Component {
               </Button>
             </Grid>
           </Grid>
+          <Dialog
+            open={this.state.displaySuccess}
+            onClose={this.closeSuccess}
+            aria-labelledby="successDialogTitle"
+            aria-describedby="successDialogDescription"
+          >
+            <DialogTitle id="successDialogTitle">Operação completada</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="successDialogDescription">
+                A aula foi agendada
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={this.state.displayStudentNotFound}
+            onClose={this.closeStudentNotFound}
+            aria-labelledby="studentNotFoundDialogTitle"
+            aria-describedby="studentNotFoundDialogDescription"
+          >
+            <DialogTitle id="studentNotFoundDialogTitle">Erro</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="studentNotFoundDialogDescription">
+                Aluno com o ID fornecido não está cadastrado
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={this.state.displayStudentConflict}
+            onClose={this.closeStudentConflict}
+            aria-labelledby="studentConflictDialogTitle"
+            aria-describedby="studentConflictDialogDescription"
+          >
+            <DialogTitle id="studentConflictDialogTitle">A aula não pôde ser marcada</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="studentConflictDialogDescription">
+                A marcação dessa aula gera conflito na grade horária deste aluno
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={this.state.displayInstructorConflict}
+            onClose={this.closeInstructorConflict}
+            aria-labelledby="instructorConflictDialogTitle"
+            aria-describedby="instructorConflictDialogDescription"
+          >
+            <DialogTitle id="instructorConflictDialogTitle">
+              A aula não pôde ser marcada
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="instructorConflictDialogDescription">
+                A marcação dessa aula gera conflito na grade horária deste instrutor
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     );

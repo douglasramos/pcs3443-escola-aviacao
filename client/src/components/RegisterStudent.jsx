@@ -10,6 +10,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import MenuItem from '@material-ui/core/MenuItem';
+import Paper from '@material-ui/core/Paper';
 
 class RegisterStudent extends Component {
   constructor() {
@@ -122,7 +123,129 @@ class RegisterStudent extends Component {
 
   render() {
     return (
-      <div>
+      <Paper style={{ padding: 30 }}>
+        <div>
+          <Typography component="h4" variant="h4" gutterBottom>
+            Cadastro de aluno
+          </Typography>
+          <Grid container spacing={16}>
+            <Grid item lg={3}>
+              <TextField
+                id="TextField_name"
+                label="Nome"
+                type="text"
+                name="name"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.nameIsFilled && this.state.wasSubmitted}
+                value={this.state.name}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item lg={5}>
+              <TextField
+                id="TextField_address"
+                label="Endereço"
+                type="text"
+                name="address"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.addressIsFilled && this.state.wasSubmitted}
+                value={this.state.address}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item lg={4}>
+              <TextField
+                id="TextField_birth_date"
+                label="Data de Nascimento"
+                type="date"
+                name="birthDate"
+                required
+                variant="outlined"
+                margin="normal"
+                InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
+                fullWidth
+                error={!this.state.birthDateIsFilled && this.state.wasSubmitted}
+                value={this.state.birthDate}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item lg={4}>
+              <TextField
+                id="TextField_email"
+                label="Email"
+                type="email"
+                name="email"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.emailIsFilled && this.state.wasSubmitted}
+                value={this.state.email}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item lg={3}>
+              <TextField
+                id="TextField_password"
+                label="Senha"
+                type="password"
+                name="password"
+                required
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                error={!this.state.passwordIsFilled && this.state.wasSubmitted}
+                value={this.state.password}
+                onChange={this.handleChange}
+              />
+            </Grid>
+            <Grid item lg={5} style={{ position: 'relative', top: '16px' }}>
+              <TextField
+                id="TextField_course"
+                select
+                label="Curso"
+                name="course"
+                value={this.state.course}
+                onChange={this.handleChange}
+                fullWidth
+                error={this.state.wasSubmitted && !this.state.courseIsFilled}
+                variant="outlined"
+              >
+                <MenuItem key="Curso_10h" value={10}>
+                  Habilitação básica de pilotagem (10h)
+                </MenuItem>
+                <MenuItem key="Curso_20h" value={20}>
+                  Pilotagem comercial (20h)
+                </MenuItem>
+                <MenuItem key="Curso_30h" value={30}>
+                  Pilotagem de aviões de grande porte (30h)
+                </MenuItem>
+                <MenuItem key="Curso_50h" value={50}>
+                  Habilitação para instrutores de voo (50h)
+                </MenuItem>
+              </TextField>
+            </Grid>
+          </Grid>
+          <div className="mt-3 text-right">
+            <Button variant="outlined" onClick={this.resetState}>
+              cancelar
+            </Button>
+            <Button
+              className="ml-3"
+              variant="contained"
+              style={{ backgroundColor: '#2cad58', color: 'white' }}
+              onClick={this.submitNew}
+            >
+              cadastrar
+            </Button>
+          </div>
+        </div>
         <Dialog
           open={this.state.dialogOpen}
           onClose={this.handleDialogClose}
@@ -149,127 +272,7 @@ class RegisterStudent extends Component {
             </DialogContentText>
           </DialogContent>
         </Dialog>
-        <Typography component="h4" variant="h4" gutterBottom>
-          Cadastro de aluno
-        </Typography>
-        <Grid container spacing={16}>
-          <Grid item lg={3}>
-            <TextField
-              id="TextField_name"
-              label="Nome"
-              type="text"
-              name="name"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.nameIsFilled && this.state.wasSubmitted}
-              value={this.state.name}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item lg={5}>
-            <TextField
-              id="TextField_address"
-              label="Endereço"
-              type="text"
-              name="address"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.addressIsFilled && this.state.wasSubmitted}
-              value={this.state.address}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item lg={4}>
-            <TextField
-              id="TextField_birth_date"
-              label="Data de Nascimento"
-              type="date"
-              name="birthDate"
-              required
-              variant="outlined"
-              margin="normal"
-              InputLabelProps={{ shrink: true }} // para não ocorrer sobreposição da label e do dd/mm/yyyy
-              fullWidth
-              error={!this.state.birthDateIsFilled && this.state.wasSubmitted}
-              value={this.state.birthDate}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item lg={4}>
-            <TextField
-              id="TextField_email"
-              label="Email"
-              type="email"
-              name="email"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.emailIsFilled && this.state.wasSubmitted}
-              value={this.state.email}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item lg={3}>
-            <TextField
-              id="TextField_password"
-              label="Senha"
-              type="password"
-              name="password"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              error={!this.state.passwordIsFilled && this.state.wasSubmitted}
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
-          </Grid>
-          <Grid item lg={5} style={{ position: 'relative', top: '16px' }}>
-            <TextField
-              id="TextField_course"
-              select
-              label="Curso"
-              name="course"
-              value={this.state.course}
-              onChange={this.handleChange}
-              fullWidth
-              error={this.state.wasSubmitted && !this.state.courseIsFilled}
-              variant="outlined"
-            >
-              <MenuItem key="Curso_10h" value={10}>
-                Habilitação básica de pilotagem (10h)
-              </MenuItem>
-              <MenuItem key="Curso_20h" value={20}>
-                Pilotagem comercial (20h)
-              </MenuItem>
-              <MenuItem key="Curso_30h" value={30}>
-                Pilotagem de aviões de grande porte (30h)
-              </MenuItem>
-              <MenuItem key="Curso_50h" value={50}>
-                Habilitação para instrutores de voo (50h)
-              </MenuItem>
-            </TextField>
-          </Grid>
-        </Grid>
-        <div className="mt-3 text-right">
-          <Button variant="outlined" onClick={this.resetState}>
-            cancelar
-          </Button>
-          <Button
-            className="ml-3"
-            variant="contained"
-            style={{ backgroundColor: '#2cad58', color: 'white' }}
-            onClick={this.submitNew}
-          >
-            cadastrar
-          </Button>
-        </div>
-      </div>
+      </Paper>
     );
   }
 }
