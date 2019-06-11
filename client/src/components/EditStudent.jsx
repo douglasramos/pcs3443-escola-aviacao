@@ -15,6 +15,8 @@ import Paper from '@material-ui/core/Paper';
 import Search from '@material-ui/icons/Search';
 import DeleteForever from '@material-ui/icons/DeleteForever';
 import Edit from '@material-ui/icons/Edit';
+// file-saver
+import { saveAs } from 'file-saver';
 
 class EditStudent extends Component {
   constructor() {
@@ -174,8 +176,11 @@ class EditStudent extends Component {
   };
 
   generateLicense = () => {
-    // emissão do brevê
     console.log('Brevê emitido');
+    const url = `http://localhost:8888/api/admins/license/${String(this.state.idDisplay)}`;
+    // eslint-disable-next-line global-require
+    const altSaver = require('file-saver');
+    altSaver.saveAs(url, 'breve_aluno.pdf');
   };
 
   render() {
