@@ -7,6 +7,7 @@ import RegisterStudent from './RegisterStudent';
 import EditStudent from './EditStudent';
 import RegisterInstructor from './RegisterInstructor';
 import EditInstructor from './EditInstructor';
+import NavBar from './NavBar';
 import './DashboardAdministrator.css';
 
 function LinkTab(props) {
@@ -55,7 +56,12 @@ class DashboardAdministrator extends Component {
     } else {
       Page = <Redirect to="/unauthorized" />;
     }
-    return Page;
+    return (
+      <React.Fragment>
+        <NavBar />
+        {Page}
+      </React.Fragment>
+    );
   }
 }
 

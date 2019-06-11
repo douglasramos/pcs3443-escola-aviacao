@@ -3,12 +3,27 @@ import { Redirect } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-
+import Paper from '@material-ui/core/Paper';
 import axios from 'axios';
 
 class Login extends Component {
   constructor() {
     super();
+    let redirect;
+    let redirectionURL;
+    if (String(JSON.parse(localStorage.getItem('type'))) === 'student') {
+      redirect = true;
+      redirectionURL = '/dashboard-student';
+    } else if (String(JSON.parse(localStorage.getItem('type'))) === 'instructor') {
+      redirect = true;
+      redirectionURL = '/dashboard-instructor';
+    } else if (String(JSON.parse(localStorage.getItem('type'))) === 'admin') {
+      redirect = true;
+      redirectionURL = '/dashboard-administrator';
+    } else {
+      redirect = false;
+      redirectionURL = '';
+    }
     this.state = {
       email: '',
       emailIsFilled: false,
@@ -17,8 +32,8 @@ class Login extends Component {
       type: '',
       typeIsFilled: '',
       wasSubmitted: false,
-      redirectionURL: '',
-      redirect: false,
+      redirectionURL, // o mesmo que redirectionURL: redirectionURL
+      redirect, // o mesmo que redirect: redirect
     };
   }
 
@@ -65,16 +80,11 @@ class Login extends Component {
         password: this.state.password,
       })
       .then(response => {
-        console.log(response.data);
-        console.log(JSON.stringify(response.data));
         localStorage.setItem('ID', JSON.stringify(response.data.ID));
-        console.log(`ID: ${localStorage.getItem('ID')}`);
         localStorage.setItem('email', JSON.stringify(response.data.email));
-        console.log(`Email: ${localStorage.getItem('email')}`);
         localStorage.setItem('password', JSON.stringify(response.data.password));
-        console.log(`Senha: ${localStorage.getItem('password')}`);
         localStorage.setItem('type', JSON.stringify(response.data.type));
-        console.log(`Tipo: ${localStorage.getItem('type')}`);
+        localStorage.setItem('name', JSON.stringify(response.data.name));
         this.setState({ redirectionURL: response.data.url, redirect: true });
       })
       .catch(error => {
@@ -97,13 +107,20 @@ class Login extends Component {
       <React.Fragment>
         <Grid
           container
-          spacing={16}
+          spacing={12}
           direction="column"
+          alignContent="center"
           alignItems="center"
           justify="center"
           style={{ minHeight: '50vh' }}
         >
-          <Grid>
+          <Grid item>
+            <h3>Escola de aviação Voe Mais</h3>
+          </Grid>
+          <Grid item>
+            <h4>Login</h4>
+          </Grid>
+          <Grid item>
             <TextField
               id="TextField_email"
               label="Email"
@@ -118,7 +135,7 @@ class Login extends Component {
               error={this.state.wasSubmitted && !this.state.emailIsFilled}
             />
           </Grid>
-          <Grid>
+          <Grid item>
             <TextField
               id="TextField_password"
               label="Senha"
@@ -133,51 +150,17 @@ class Login extends Component {
               error={this.state.wasSubmitted && !this.state.passwordIsFilled}
             />
           </Grid>
-          <Grid>
-            <TextField
-              id="TextField_password"
-              label="Tipo de conta (0-admin, 1-aluno, 2-instrutor)"
-              type="number"
-              name="type"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              value={this.state.type}
-              onChange={this.handleChange}
-              error={this.state.wasSubmitted && !this.state.typeIsFilled}
-            />
+          <Grid item>
+            <Button
+              className="button-w-outline"
+              color="inherit"
+              // component={NavLink}
+              style={{ backgroundColor: '#4285F4', color: 'white', minWidth: 210 }}
+              onClick={this.login}
+            >
+              Login
+            </Button>
           </Grid>
-          <Button
-            className="button-w-outline"
-            activeClassName="active"
-            color="inherit"
-            // component={NavLink}
-            style={{ backgroundColor: '#4285F4', color: 'white', minWidth: 210 }}
-            onClick={this.register}
-          >
-            Register
-          </Button>
-          <Button
-            className="button-w-outline"
-            activeClassName="active"
-            color="inherit"
-            // component={NavLink}
-            style={{ backgroundColor: '#4285F4', color: 'white', minWidth: 210 }}
-            onClick={this.login}
-          >
-            Login
-          </Button>
-          <Button
-            className="button-w-outline"
-            activeClassName="active"
-            color="inherit"
-            // component={NavLink}
-            style={{ backgroundColor: '#4285F4', color: 'white', minWidth: 210 }}
-            onClick={this.resetSession}
-          >
-            Reset session
-          </Button>
         </Grid>
       </React.Fragment>
     );

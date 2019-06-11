@@ -29,6 +29,7 @@ def loginURL(email: str, password: str):
                 "email": student.email,
                 "password": student.password,
                 "type": 'student',
+                "name": student.name,
                 "url": "/dashboard-student/"
             }
             return login_params
@@ -42,6 +43,7 @@ def loginURL(email: str, password: str):
                 "email": instructor.email,
                 "password": instructor.password,
                 "type": 'instructor',
+                "name": instructor.name,
                 "url": "/dashboard-instructor/"
             }
             return login_params
@@ -55,6 +57,7 @@ def loginURL(email: str, password: str):
                 "email": admin.email,
                 "password": admin.password,
                 "type": 'admin',
+                "name": 'Administrador',
                 "url": "/dashboard-administrator/"
             }
             return login_params

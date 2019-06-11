@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './NavBar.css';
 import { Redirect } from 'react-router-dom';
 import EvaluateLesson from './EvaluateLesson';
+import NavBar from './NavBar';
 
 class DashboardInstructor extends Component {
   constructor() {
@@ -21,7 +22,12 @@ class DashboardInstructor extends Component {
       console.log('Type != instructor');
       Page = <Redirect to="/unauthorized" />;
     }
-    return Page;
+    return (
+      <React.Fragment>
+        <NavBar />
+        {Page}
+      </React.Fragment>
+    );
   }
 }
 
