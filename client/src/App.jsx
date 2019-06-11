@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import NavBar from './components/NavBar';
 import DashboardInstructor from './components/DashboardIntructor';
 import DashboardAdministrator from './components/DashboardAdministrator';
 import DashboardStudent from './components/DashboardStudent';
@@ -16,7 +15,6 @@ function App() {
       <CssBaseline />
       <Router>
         <div>
-          <NavBar />
           <Route exact path="/" component={HomeApp} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/unauthorized" component={Unauthorized} />
