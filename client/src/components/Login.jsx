@@ -6,6 +6,13 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import axios from 'axios';
 
+// ícones
+import Email from '@material-ui/icons/Email';
+import Lock from '@material-ui/icons/Lock';
+
+// logo
+import Logo from '../logo_aviacao.png';
+
 class Login extends Component {
   constructor() {
     super();
@@ -32,6 +39,7 @@ class Login extends Component {
       type: '',
       typeIsFilled: '',
       wasSubmitted: false,
+      error: false,
       redirectionURL, // o mesmo que redirectionURL: redirectionURL
       redirect, // o mesmo que redirect: redirect
     };
@@ -88,7 +96,7 @@ class Login extends Component {
         this.setState({ redirectionURL: response.data.url, redirect: true });
       })
       .catch(error => {
-        console.log(error.response);
+        this.setState({ error: true });
       });
   };
 
@@ -100,69 +108,112 @@ class Login extends Component {
   };
 
   render() {
+    let errorMessage = '';
+    if (this.state.error) {
+      errorMessage = <h6 style={{ color: '#FF0000' }}>Email ou senha incorretos</h6>;
+    }
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirectionURL} />;
     }
     return (
-      <React.Fragment>
-        <Grid
-          container
-          spacing={12}
-          direction="column"
-          alignContent="center"
-          alignItems="center"
-          justify="center"
-          style={{ minHeight: '50vh' }}
+      <div
+        style={{
+          background: 'linear-gradient(to right bottom, #1488CC, #37aff5)',
+          position: 'fixed',
+          padding: '0',
+          margin: '0',
+          top: '0',
+          left: '0',
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <div
+          style={{
+            'border-radius': '10px',
+            'box-shadow': 'rgba(0, 0, 0, 0.35) 20px 20px 20px -8px',
+            width: '700px',
+            height: '450px',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            'margin-left': '-350px',
+            'margin-top': '-225px',
+          }}
         >
-          <Grid item>
-            <h3>Escola de aviação Voe Mais</h3>
-          </Grid>
-          <Grid item>
-            <h4>Login</h4>
-          </Grid>
-          <Grid item>
-            <TextField
-              id="TextField_email"
-              label="Email"
-              type="text"
-              name="email"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              value={this.state.email}
-              onChange={this.handleChange}
-              error={this.state.wasSubmitted && !this.state.emailIsFilled}
-            />
-          </Grid>
-          <Grid item>
-            <TextField
-              id="TextField_password"
-              label="Senha"
-              type="password"
-              name="password"
-              required
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              value={this.state.password}
-              onChange={this.handleChange}
-              error={this.state.wasSubmitted && !this.state.passwordIsFilled}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              className="button-w-outline"
-              color="inherit"
-              // component={NavLink}
-              style={{ backgroundColor: '#4285F4', color: 'white', minWidth: 210 }}
-              onClick={this.login}
+          <Paper style={{ height: '450px' }}>
+            <Grid
+              container
+              spacing={12}
+              direction="column"
+              alignContent="center"
+              alignItems="center"
+              justify="center"
+              style={{ minHeight: '50vh' }}
             >
-              Login
-            </Button>
-          </Grid>
-        </Grid>
-      </React.Fragment>
+              <Grid item>
+                <img src={Logo} alt="Logo" />
+              </Grid>
+              <Grid item>
+                <h3>Escola de aviação Voe Mais</h3>
+              </Grid>
+              <Grid item container direction="row" justify="center">
+                <Grid item style={{ position: 'relative', top: '25px', left: '-10px' }}>
+                  <Email style={{ 'font-size': '40px' }} />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    style={{ width: '400px' }}
+                    id="TextField_email"
+                    label="Email"
+                    type="text"
+                    name="email"
+                    required
+                    variant="outlined"
+                    margin="normal"
+                    value={this.state.email}
+                    onChange={this.handleChange}
+                    error={this.state.wasSubmitted && !this.state.emailIsFilled}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item container direction="row" justify="center">
+                <Grid item style={{ position: 'relative', top: '25px', left: '-10px' }}>
+                  <Lock style={{ 'font-size': '40px' }} />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    style={{ width: '400px' }}
+                    id="TextField_password"
+                    label="Senha"
+                    type="password"
+                    name="password"
+                    required
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    value={this.state.password}
+                    onChange={this.handleChange}
+                    error={this.state.wasSubmitted && !this.state.passwordIsFilled}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item style={{ position: 'relative', top: '20px' }}>
+                <Button
+                  className="button-w-outline"
+                  color="inherit"
+                  // component={NavLink}
+                  style={{ backgroundColor: '#4285F4', color: 'white', minWidth: 442 }}
+                  onClick={this.login}
+                >
+                  Login
+                </Button>
+                <React.Fragment>{errorMessage}</React.Fragment>
+              </Grid>
+            </Grid>
+          </Paper>
+        </div>
+      </div>
     );
   }
 }
