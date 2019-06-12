@@ -6,6 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import './NavBar.css';
 import { Redirect } from 'react-router-dom';
 
+// logo
+import SmallLogo from '../logo_aviacao_pequeno.png';
+
 class NavBar extends Component {
   constructor(props) {
     super(props);
@@ -52,7 +55,7 @@ class NavBar extends Component {
               <span className="fas fa-plane-departure mr-2 display-logo" />
               {/* Device Grandes */}
               <Typography variant="h6" color="inherit" className="title display-logo-name">
-                <span className="fas fa-plane-departure mr-2" />
+                <img src={SmallLogo} alt="Small logo" />
                 Voe Mais
               </Typography>
               {this.state.localStorage ? (
