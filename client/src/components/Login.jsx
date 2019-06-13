@@ -107,6 +107,12 @@ class Login extends Component {
     localStorage.removeItem('type');
   };
 
+  _handleKeyDown = e => {
+    if (e.key === 'Enter') {
+      this.login();
+    }
+  };
+
   render() {
     let errorMessage = '';
     if (this.state.error) {
@@ -195,6 +201,7 @@ class Login extends Component {
                     value={this.state.password}
                     onChange={this.handleChange}
                     error={this.state.wasSubmitted && !this.state.passwordIsFilled}
+                    onKeyDown={this._handleKeyDown}
                   />
                 </Grid>
               </Grid>
