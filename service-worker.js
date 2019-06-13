@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/pcs3443-escola-aviacao/precache-manifest.ec21d0b63f5710b4ebd7ce9fc838a0bb.js"
+  "/pcs3443-escola-aviacao/precache-manifest.64bfbeedbe03010ebb7186ec8fe33db0.js"
 );
 
 self.addEventListener('message', (event) => {
