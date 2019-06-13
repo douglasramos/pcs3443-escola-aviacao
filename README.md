@@ -69,6 +69,15 @@ You can test the endpoints using a rest API software of your choice or even via 
 curl http://127.0.0.1:5000/api/instructor
 ```
 
+Using your local backend to receive Client Calls
+
+Currently, the client source is calling the API through the following link: <https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api>
+
+This is the url from our backend deploy on AWS. We don't assure that this server will be running at the time you are testing so we highly recommend that
+you change the api call to your local backend http://localhost:8888/api
+
+To do this simply replace all calls to the backend on the client source.
+
 
 ### Project's source code backend structure
 
