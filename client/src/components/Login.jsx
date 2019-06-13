@@ -67,7 +67,7 @@ class Login extends Component {
   };
 
   register = () => {
-    const url = 'http://localhost:8888/api/login/register';
+    const url = 'https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/login/register';
     axios
       .post(url, {
         email: this.state.email,
@@ -81,7 +81,7 @@ class Login extends Component {
 
   login = () => {
     console.log(this.state);
-    const url = 'http://localhost:8888/api/login/';
+    const url = 'https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/login/';
     axios
       .post(url, {
         email: this.state.email,
@@ -136,21 +136,21 @@ class Login extends Component {
       >
         <div
           style={{
-            'border-radius': '10px',
-            'box-shadow': 'rgba(0, 0, 0, 0.35) 20px 20px 20px -8px',
+            borderRadius: '10px',
+            boxShadow: 'rgba(0, 0, 0, 0.35) 20px 20px 20px -8px',
             width: '700px',
             height: '450px',
             position: 'absolute',
             top: '50%',
             left: '50%',
-            'margin-left': '-350px',
-            'margin-top': '-225px',
+            marginLeft: '-350px',
+            marginTop: '-225px',
           }}
         >
           <Paper style={{ height: '450px' }}>
             <Grid
               container
-              spacing={12}
+              spacing={8}
               direction="column"
               alignContent="center"
               alignItems="center"
@@ -165,7 +165,7 @@ class Login extends Component {
               </Grid>
               <Grid item container direction="row" justify="center">
                 <Grid item style={{ position: 'relative', top: '25px', left: '-10px' }}>
-                  <Email style={{ 'font-size': '40px' }} />
+                  <Email style={{ fontSize: '40px' }} />
                 </Grid>
                 <Grid item>
                   <TextField
@@ -185,7 +185,7 @@ class Login extends Component {
               </Grid>
               <Grid item container direction="row" justify="center">
                 <Grid item style={{ position: 'relative', top: '25px', left: '-10px' }}>
-                  <Lock style={{ 'font-size': '40px' }} />
+                  <Lock style={{ fontSize: '40px' }} />
                 </Grid>
                 <Grid item>
                   <TextField

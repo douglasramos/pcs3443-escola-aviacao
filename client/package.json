@@ -8,6 +8,7 @@
     "@material-ui/styles": "^3.0.0-alpha.10",
     "axios": "^0.19.0",
     "file-saver": "^2.0.2",
+    "gh-pages": "^2.0.1",
     "prop-types": "^15.7.2",
     "react": "16.8.6",
     "react-dom": "16.8.6",
@@ -16,6 +17,8 @@
     "typeface-roboto": "0.0.54"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -48,5 +51,5 @@
     "prettier": "^1.17.1",
     "typescript": "^3.4.5"
   },
-  "homepage" : "https://douglasramos.github.io/pcs3443-escola-aviacao/"
+  "homepage": "https://douglasramos.github.io/pcs3443-escola-aviacao"
 }

@@ -53,7 +53,7 @@ class EditInstructor extends Component {
   }
 
   getByID = () => {
-    const url = `http://localhost:8888/api/instructors/${this.state.idField}`;
+    const url = `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/instructors/${this.state.idField}`;
     const idToDisplay = this.state.idField; // isso evita de que o número da matrícula fique mudando
     if (this.state.idFieldIsFilled) {
       axios
@@ -145,7 +145,7 @@ class EditInstructor extends Component {
   };
 
   editAPI = () => {
-    const url = `http://localhost:8888/api/instructors/${this.state.idDisplay}`;
+    const url = `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/instructors/${this.state.idDisplay}`;
     if (
       this.state.edit_nameIsFilled &&
       this.state.edit_institutionIsFilled &&
@@ -198,7 +198,7 @@ class EditInstructor extends Component {
   };
 
   deleteInstructor = () => {
-    const url = `http://localhost:8888/api/instructors/${this.state.idDisplay}`;
+    const url = `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/instructors/${this.state.idDisplay}`;
     axios.delete(url).then(this.resetState(true));
   };
 

@@ -70,7 +70,7 @@ class EvaluateLesson extends Component {
   getLessonList = () => {
     axios({
       method: 'get',
-      url: `http://localhost:8888/api/instructors/${this.state.instructorID}/lessons`,
+      url: `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/instructors/${this.state.instructorID}/lessons`,
     })
       .then(response => {
         console.log(response.data);
@@ -99,7 +99,7 @@ class EvaluateLesson extends Component {
 
   submitEvaluation = () => {
     if (this.state.durationIsFilled && this.state.gradeIsFilled) {
-      const url = `http://localhost:8888/api/lessons/${this.state.evaluationMenuLessonID}`;
+      const url = `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/lessons/${this.state.evaluationMenuLessonID}`;
       const duracaoFormatada = `${this.state.duration}:00`;
       let commentToAdd = 'Nenhum comentário adicionado';
       if (this.state.commentIsFilled) {
@@ -128,7 +128,7 @@ class EvaluateLesson extends Component {
   updateLessonList = () => {
     axios({
       method: 'get',
-      url: `http://localhost:8888/api/instructors/${this.state.instructorID}/lessons`,
+      url: `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/instructors/${this.state.instructorID}/lessons`,
     }).then(response => {
       console.log(response.data);
       this.setState({ lessonList: response.data }, this.setState({ lessonsAreListed: true }));

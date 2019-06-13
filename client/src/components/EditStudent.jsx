@@ -46,7 +46,7 @@ class EditStudent extends Component {
   }
 
   getByID = () => {
-    const url = `http://localhost:8888/api/students/${this.state.idField}`;
+    const url = `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/students/${this.state.idField}`;
     const idToDisplay = this.state.idField; // isso evita de que o número da matrícula fique mudando
 
     if (this.state.idFieldIsFilled) {
@@ -123,7 +123,7 @@ class EditStudent extends Component {
   };
 
   editAPI = () => {
-    const url = `http://localhost:8888/api/students/${this.state.idDisplay}`;
+    const url = `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/students/${this.state.idDisplay}`;
     if (
       this.state.edit_nameIsFilled &&
       this.state.edit_birthDateIsFilled &&
@@ -159,7 +159,7 @@ class EditStudent extends Component {
   };
 
   deleteStudent = () => {
-    const url = `http://localhost:8888/api/students/${this.state.idDisplay}`;
+    const url = `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/students/${this.state.idDisplay}`;
     axios.delete(url).then(this.resetState(true));
   };
 
@@ -177,7 +177,7 @@ class EditStudent extends Component {
 
   generateLicense = () => {
     console.log('Brevê emitido');
-    const url = `http://localhost:8888/api/admins/license/${String(this.state.idDisplay)}`;
+    const url = `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/admins/license/${String(this.state.idDisplay)}`;
     // eslint-disable-next-line global-require
     const altSaver = require('file-saver');
     altSaver.saveAs(url, 'breve_aluno.pdf');

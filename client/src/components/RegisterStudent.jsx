@@ -37,7 +37,7 @@ class RegisterStudent extends Component {
   }
 
   submitNew = () => {
-    const url = 'http://localhost:8888/api/students/';
+    const url = 'https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/students/';
     this.setState({ wasSubmitted: true });
     if (
       this.state.nameIsFilled &&

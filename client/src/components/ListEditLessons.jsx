@@ -89,7 +89,7 @@ class ListEditLessons extends Component {
     this.setState({ completeLessonList: [] }, this.setState({ incompleteLessonList: [] }));
     axios({
       method: 'get',
-      url: `http://localhost:8888/api/students/${this.state.ID}/lessons`,
+      url: `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/students/${this.state.ID}/lessons`,
     })
       .then(response => {
         console.log(`Lists being split. Length:${response.data.length}`);
@@ -116,7 +116,7 @@ class ListEditLessons extends Component {
       });
     axios({
       method: 'get',
-      url: `http://localhost:8888/api/students/${this.state.ID}`,
+      url: `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/students/${this.state.ID}`,
     }).then(response => {
       console.log('Dados do aluno: \r\n');
       console.log(response.data);
@@ -134,7 +134,7 @@ class ListEditLessons extends Component {
   updateLessonList = () => {
     axios({
       method: 'get',
-      url: `http://localhost:8888/api/students/${this.state.ID}/lessons`,
+      url: `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/students/${this.state.ID}/lessons`,
     }).then(response => {
       console.log(`Lists being split. Length:${response.data.length}`);
       const complete = [];
@@ -200,7 +200,7 @@ class ListEditLessons extends Component {
     ) {
       axios({
         method: 'get',
-        url: 'http://localhost:8888/api/lessons/availableinstructors',
+        url: 'https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/lessons/availableinstructors',
         headers: { 'Content-Type': 'application/json' },
         params: {
           day: String(this.state.editMenuDate),
@@ -224,7 +224,7 @@ class ListEditLessons extends Component {
       this.state.editMenuInstructorIsFilled &&
       this.state.editMenuStartIsFilled
     ) {
-      const url = `http://localhost:8888/api/lessons/${String(this.state.editMenuID)}`;
+      const url = `https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/lessons/${String(this.state.editMenuID)}`;
       axios
         .put(url, {
           day: this.state.editMenuDate,

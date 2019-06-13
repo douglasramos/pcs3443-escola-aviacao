@@ -43,7 +43,7 @@ class RegisterInstructor extends Component {
 
   submitNew = () => {
     // Post a new instructor
-    const url = 'http://localhost:8888/api/instructors/';
+    const url = 'https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/instructors/';
     this.setState({ wasSubmitted: true });
     if (
       this.state.nameIsFilled &&

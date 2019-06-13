@@ -56,7 +56,7 @@ class ScheduleLesson extends Component {
     if (this.state.dateIsFilled && this.state.startTimeIsFilled && this.state.endTimeIsFilled) {
       axios({
         method: 'get',
-        url: 'http://localhost:8888/api/lessons/availableinstructors',
+        url: 'https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/lessons/availableinstructors',
         headers: { 'Content-Type': 'application/json' },
         params: {
           day: String(this.state.date),
@@ -108,7 +108,7 @@ class ScheduleLesson extends Component {
   };
 
   submit = () => {
-    const url = 'http://localhost:8888/api/lessons/';
+    const url = 'https://cors-anywhere.herokuapp.com/http://ec2-18-212-165-41.compute-1.amazonaws.com/api/lessons/';
     if (
       this.state.dateIsFilled &&
       this.state.startTimeIsFilled &&
