@@ -150,7 +150,7 @@ class Login extends Component {
           <Paper style={{ height: '450px' }}>
             <Grid
               container
-              spacing={8}
+              spacing={12}
               direction="column"
               alignContent="center"
               alignItems="center"

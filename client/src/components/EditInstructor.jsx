@@ -249,6 +249,15 @@ class EditInstructor extends Component {
                 ''
               ) : (
                 <div>
+                  <Tooltip title="Editar instrutor">
+                    <IconButton
+                      color="primary"
+                      onClick={this.enableEdit}
+                      style={{ position: 'relative', top: '20px', left: '4px' }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
                   <Tooltip title="Excluir instrutor">
                     <IconButton
                       color="secondary"
@@ -256,15 +265,6 @@ class EditInstructor extends Component {
                       style={{ position: 'relative', top: '20px', left: '4px' }}
                     >
                       <DeleteForever />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Editar instrutor">
-                    <IconButton
-                      color="secondary"
-                      onClick={this.enableEdit}
-                      style={{ position: 'relative', top: '20px', left: '4px' }}
-                    >
-                      <Edit />
                     </IconButton>
                   </Tooltip>
                 </div>

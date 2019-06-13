@@ -261,18 +261,22 @@ class EditStudent extends Component {
                 ''
               ) : (
                 <div style={{ 'text-align': 'end' }}>
-                  <Tooltip title="Deletar aluno">
+                  <Tooltip title="Editar aluno">
+                    <IconButton
+                      color="primary"
+                      onClick={this.enableEdit}
+                      style={{ position: 'relative', top: '20px', left: '4px' }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Excluir aluno">
                     <IconButton
                       color="secondary"
                       onClick={this.deleteStudent}
-                      style={{ top: '20px' }}
+                      style={{ position: 'relative', top: '20px', left: '4px' }}
                     >
                       <DeleteForever />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Editar aluno">
-                    <IconButton color="secondary" onClick={this.enableEdit} style={{ top: '20px' }}>
-                      <Edit />
                     </IconButton>
                   </Tooltip>
                 </div>
