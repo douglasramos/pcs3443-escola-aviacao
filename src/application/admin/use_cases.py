@@ -12,6 +12,8 @@ from datetime import datetime
 
 import os
 
+import random
+
 
 @db_session
 def register_admin(email: str, password: str):
@@ -39,6 +41,7 @@ def license_Emit(id: int):
     data_Nascimento = data_Nascimento.strftime('%d/%m/%Y')
     data_Conclusao = datetime.now().strftime('%d/%m/%Y')
     hora_Curso = stud.courseDuration
+    num_breve = random.randint(1000000, 9999999)
     print(hora_Curso, file=sys.stderr)
 
     if(hora_Curso == 10):
@@ -91,13 +94,8 @@ def license_Emit(id: int):
             pdf.cell(0, 10, nome_aluno, 0, 1, 'C')
             # Retornar ao normal
             self.set_font('Times', '', 14)
-            pdf.cell(43, 10, '              Nascido em ', 0, 0)
-            pdf.cell(23, 10, data_Nascimento, 0, 0)
-            # Mudar o nome do curso se for apropriado
-            pdf.cell(64, 10, ', concluiu com êxito o curso de ', 0, 0)
-            w = self.get_string_width(nome_Curso) + 2
-            pdf.cell(w, 10, nome_Curso, 0, 0)
-            pdf.cell(25, 10, 'em ' + data_Conclusao, 0, 0)
+            pdf.multi_cell(0, 10, '              Nascido(a) em ' + data_Nascimento + ', concluiu com êxito o Curso de ' +
+                           nome_Curso + ' em ' + data_Conclusao + ' garantindo-lhe o Brevê número: ' + num_breve)
             # Assinatura do Diretor
             self.ln(70)
             pdf.cell(0, 10, '___________________                ', 0, 1, 'R')
