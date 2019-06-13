@@ -41,7 +41,7 @@ def license_Emit(id: int):
     data_Nascimento = data_Nascimento.strftime('%d/%m/%Y')
     data_Conclusao = datetime.now().strftime('%d/%m/%Y')
     hora_Curso = stud.courseDuration
-    num_breve = random.randint(1000000, 9999999)
+    num_breve = str(random.randint(1000000, 9999999))
     print(hora_Curso, file=sys.stderr)
 
     if(hora_Curso == 10):
