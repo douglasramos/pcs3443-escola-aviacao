@@ -107,6 +107,8 @@ def license_Emit(id: int):
             self.add_page('L')
             self.certificate_body()
 
+    if not os.path.exists('licenses'):
+        os.mkdir('licenses')
     pdf = PDF()
     pdf.set_title(title)
     pdf.print_certificate()
