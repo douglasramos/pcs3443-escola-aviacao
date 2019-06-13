@@ -541,7 +541,7 @@ class ListEditLessons extends Component {
             <Tooltip title={tooltipMessage} placement="top">
               <ColoredLinearProgress variant="determinate" value={flightProgressBar} />
             </Tooltip>
-            <Typography component="h6" variant="h6" gutterBottom>
+            <Typography component="h6" variant="h6" gutterBottom style={{ marginTop: 30 }}>
               Aulas encerradas
             </Typography>
             <Paper>
@@ -565,7 +565,7 @@ class ListEditLessons extends Component {
           ' '
         ) : (
           <div>
-            <Typography component="h6" variant="h6" gutterBottom>
+            <Typography component="h6" variant="h6" gutterBottom style={{ marginTop: 30 }}>
               Aulas pendentes
             </Typography>
             <Paper>

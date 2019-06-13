@@ -140,7 +140,7 @@ class ScheduleLesson extends Component {
     return (
       <div>
         <div className="container mt-3">
-          <Typography component="h4" variant="h4" gutterBottom>
+          <Typography component="h4" variant="h4" gutterBottom style={{ marginTop: 30 }}>
             Agendar
           </Typography>
           <Grid container spacing={16}>
